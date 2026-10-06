@@ -477,6 +477,14 @@ app restart and retained-history visibility remain pending.
 - Per-claim evidence statuses, preserved asset inspection and native 20-test log
   remain pending/unconfirmed. No additional conversion-rate or playback claim made.
 
+## 6 October 2026 — UNKNOWN evidence restart confirmation
+
+- User explicitly confirms the manually added Guitar claim "Original recording
+  guitar unknown" remains labelled UNKNOWN after quitting/reopening.
+- LIVE APP: **PASS, user-reported UNKNOWN claim persistence**, without historical
+  verification promotion. Sourced UNVERIFIED claim path remains untested live.
+- Preserved audio inspection and full native test output remain pending/unconfirmed.
+
 ## Live result template
 
 - Date, build version/commit:
