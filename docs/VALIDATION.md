@@ -394,6 +394,19 @@ app restart and retained-history visibility remain pending.
 - CFString pointer and deprecated native backend messages were warnings; the supplied
   log identifies the test expression as the build-stopping error.
 
+## 6 October 2026 — Stereo candidate Mac build passes
+
+- User supplied complete Terminal log for update through `d59b02c` on their Mac mini.
+- XCTest: **PASS, 14 executed, 0 failures**, including stereo channel preservation,
+  phase cancellation resistance, legacy context/routing and separate local stores.
+  The additional Swift Testing runner reports zero tests; the XCTest suite above
+  supplies the actual 14-test verification.
+- Native release compilation, app packaging and script's signing verification:
+  **PASS**. Script completed with `Built build/Tone Replicator.app` and returned
+  to prompt. Nonfatal CFString/native-backend warnings remain.
+- Real app launch, stereo AudioUnit input/output maps and Kemper calibration:
+  **PENDING user live results**. Build success does not establish stereo routing.
+
 ## Live result template
 
 - Date, build version/commit:
