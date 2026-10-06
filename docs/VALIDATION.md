@@ -57,6 +57,32 @@ Dates use the user's Africa/Johannesburg timezone. No synthetic test is a hardwa
 - Shell syntax of changed script: checked in cloud; native compilation/retest pending
   user execution. Do not infer compilation, tests or live hardware pass.
 
+## 6 October 2026 — Retry after local repair commands
+
+- User reran `bash scripts/build-macos.sh` with the native backend.
+- Previous `@State` macro failure not reported in this attempt.
+- Test-target compilation: **FAIL**, `ProjectTests.swift` cannot import `XCTest`:
+  `no such module 'XCTest'`. No Swift tests completed.
+- Selected developer directory, Swift executable/version and full Xcode availability
+  require diagnosis. Missing XCTest alone does not establish which installation is used.
+- Next checks: `xcode-select -p`, `xcodebuild -version`, `which swift`, `swift --version`.
+- Do not remove test requirements or claim native app/live-audio readiness.
+
+## 6 October 2026 — Developer-tool diagnosis
+
+- User's selected developer directory: `/Library/Developer/CommandLineTools`.
+- `xcodebuild -version`: failed, explicitly requires full Xcode rather than the
+  selected Command Line Tools instance.
+- Swift executable: `/usr/bin/swift`.
+- Swift reported: Apple Swift 6.4 (`swiftlang-6.4.0.34.1`, clang 2100.3.34.1),
+  driver 1.168.6, target `arm64-apple-macosx26.0`. Target triple is not a confirmed
+  host macOS version.
+- Diagnosis: selected Command Line Tools do not provide the XCTest framework
+  required by the package's tests. Full Xcode installation/selection and initial
+  setup are required. Whether Xcode is already installed has not been confirmed.
+- Script now fails early with this prerequisite explanation. Mac retry, Swift tests,
+  release compilation and live input/output remain pending.
+
 ## Live result template
 
 - Date, build version/commit:

@@ -5,6 +5,11 @@ if [[ "$(uname -s)" != Darwin ]]; then
     echo "The native app requires a Mac with Xcode 16+ / Swift 6 and macOS 14+. Use make test for the portable core." >&2
     exit 1
 fi
+if ! xcodebuild -version >/dev/null 2>&1; then
+    echo "Full Xcode is required for XCTest. Install Xcode, open it to finish setup, then select its developer directory:" >&2
+    echo "sudo xcode-select --switch /Applications/Xcode.app/Contents/Developer" >&2
+    exit 1
+fi
 # Temporary compatibility workaround: XCBuild failed to initialize on the user's Mac.
 # Native is deprecated in newer SwiftPM; revalidate the default system before removal.
 swift test --build-system native
