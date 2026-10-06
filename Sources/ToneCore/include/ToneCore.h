@@ -24,6 +24,20 @@ void tr_queue_destroy(TRSampleQueue *queue);
 uint32_t tr_queue_push(TRSampleQueue *queue, const float *samples, uint32_t count);
 uint32_t tr_queue_pop(TRSampleQueue *queue, float *samples, uint32_t count);
 uint64_t tr_queue_dropped(const TRSampleQueue *queue);
+#define TR_FINGERPRINT_BANDS 24
+typedef struct TRFingerprint {
+    uint64_t frames;
+    uint64_t invalid;
+    uint64_t clipped;
+    uint32_t windows;
+    double peak;
+    double rms;
+    double dc;
+    double band_db[TR_FINGERPRINT_BANDS];
+} TRFingerprint;
+/* Offline only: allocates FFT scratch. No sample-rate conversion is performed. */
+int tr_fingerprint(const float *samples, uint32_t count, double rate, TRFingerprint *result);
+double tr_band_edge(uint32_t edge);
 #ifdef __cplusplus
 }
 #endif
