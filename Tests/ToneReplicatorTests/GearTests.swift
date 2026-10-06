@@ -78,7 +78,7 @@ final class GearTests: XCTestCase {
     func testMeasuredCaptureAndWaveFormat() throws {
         let samples: [Float] = (0..<441_000).map { 0.25 * Float(sin(2 * Double.pi * 1000 * Double($0) / 44_100)) }
         let draft = try CalibrationAnalyzer.analyze(samples: samples, guitarID: UUID(), route: RoutingPreset(),
-            context: CaptureContext(), lostFrames: false, invalidSamples: false)
+            context: CaptureContext(path: .direct), lostFrames: false, invalidSamples: false)
         XCTAssertEqual(draft.record.fingerprint.sampleRate, 44_100)
         XCTAssertEqual(draft.record.fingerprint.bandDB.count, 24)
         XCTAssertEqual(draft.record.fingerprint.rms, 0.25 / sqrt(2), accuracy: 0.00001)
@@ -91,12 +91,35 @@ final class GearTests: XCTestCase {
         var samples = [Float](repeating: 0, count: 441_000)
         func analyze(_ lost: Bool = false) throws {
             _ = try CalibrationAnalyzer.analyze(samples: samples, guitarID: UUID(), route: RoutingPreset(),
-                context: CaptureContext(), lostFrames: lost, invalidSamples: false)
+                context: CaptureContext(path: .direct), lostFrames: lost, invalidSamples: false)
         }
         XCTAssertThrowsError(try analyze()) // Silence.
         samples = [Float](repeating: 0.25, count: 441_000)
         XCTAssertThrowsError(try analyze(true)) // Dropped frames.
         samples[0] = 1.2; XCTAssertThrowsError(try analyze()) // Clipping.
         samples[0] = .nan; XCTAssertThrowsError(try analyze()) // Nonfinite.
+    }
+
+    func testLegacyContextDoesNotInventSignalPath() throws {
+        let data = Data("{\"guitarVolume\":\"10\",\"guitarTone\":\"10\",\"interfaceGainNote\":\"unchanged\"}".utf8)
+        let context = try JSONDecoder().decode(CaptureContext.self, from: data)
+        XCTAssertEqual(context.path, .unspecified)
+        XCTAssertEqual(context.guitarVolume, "10")
+        XCTAssertEqual(context.guitarTone, "10")
+        XCTAssertEqual(context.interfaceGainNote, "unchanged")
+        XCTAssertEqual(context.deviceNote, "")
+    }
+    func testKemperContextRoundTripsAndUnknownPathCannotBeCaptured() throws {
+        var context = CaptureContext(path: .kemperBypass)
+        context.deviceNote = "Kemper PROFILER Stage"; context.firmwareNote = "14.2.2.68644"
+        context.outputNote = "User-entered bypass/output settings"
+        XCTAssertEqual(try JSONDecoder().decode(CaptureContext.self, from: JSONEncoder().encode(context)), context)
+        XCTAssertThrowsError(try CalibrationAnalyzer.analyze(samples: [Float](repeating: 0.25, count: 441_000),
+            guitarID: UUID(), route: RoutingPreset(), context: CaptureContext(),
+            lostFrames: false, invalidSamples: false)) { error in
+            guard case CalibrationError.signalPathRequired = error else {
+                return XCTFail("Expected missing-path error, got \(error)")
+            }
+        }
     }
 }

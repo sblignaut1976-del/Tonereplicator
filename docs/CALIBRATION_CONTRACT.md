@@ -21,6 +21,10 @@ behavior, not historical settings, a pickup specification, a match score or reco
 studio equipment. Reject input at unsupported rates rather than converting it here.
 
 Save a local Float32 WAV and its fingerprint, interface UID/channel and timestamp.
+Store user-selected signal path and device/firmware/output notes. The user's intended
+path is Kemper Stage bypass → Monitor Output → interface line input. Existing direct
+captures remain history; a new physical path requires a new real calibration. Older
+capture context lacking path metadata decodes as UNSPECIFIED without inventing facts.
 Require explicit Save Base Tone. Existing calibration requires an explicit Replace
 Base Tone confirmation; keep the previous capture/history. Factory and calibration
 sources remain distinct; no verified factory datasets are shipped, so Factory shows

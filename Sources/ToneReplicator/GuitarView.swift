@@ -58,6 +58,9 @@ struct GuitarView: View {
                                     Text("Guitar volume: \(saved.context.guitarVolume.isEmpty ? "UNKNOWN" : saved.context.guitarVolume)")
                                     Text("Guitar tone: \(saved.context.guitarTone.isEmpty ? "UNKNOWN" : saved.context.guitarTone)")
                                     Text("Interface gain note: \(saved.context.interfaceGainNote.isEmpty ? "UNKNOWN" : saved.context.interfaceGainNote)")
+                                    Text("Signal path: \(saved.context.path == .unspecified ? "UNSPECIFIED — not recorded in this capture" : saved.context.path.rawValue)")
+                                    Text("Device / firmware: \(saved.context.deviceNote.isEmpty ? "UNKNOWN" : saved.context.deviceNote) / \(saved.context.firmwareNote.isEmpty ? "UNKNOWN" : saved.context.firmwareNote)")
+                                    Text("Output settings: \(saved.context.outputNote.isEmpty ? "UNKNOWN" : saved.context.outputNote)")
                                 }
                             }.font(.caption).foregroundStyle(.secondary).padding(.top, 8)
                         }
@@ -65,8 +68,23 @@ struct GuitarView: View {
 
                     VStack(alignment: .leading, spacing: 16) {
                         Text("RECORD MY CALIBRATION").font(.caption.weight(.bold)).foregroundStyle(blue)
-                        Text("Use the guitar directly into the SSL instrument input. Keep the pickup, guitar controls and interface gain unchanged while recording.")
+                        Text("Choose and record the actual signal path. Keep the pickup, guitar controls, device output and interface gain unchanged while recording.")
                             .font(.callout).foregroundStyle(.secondary)
+                        Picker("Calibration signal path", selection: $audio.captureContext.path) {
+                            ForEach(CalibrationPath.allCases, id: \.self) { Text($0.rawValue).tag($0) }
+                        }.disabled(audio.captureBusy || audio.calibrationDraft != nil)
+                        if audio.captureContext.path == .kemperBypass {
+                            Text("For the intended clean Base Tone, bypass Kemper amp, cabinet and all effects. Connect its analog output to an interface LINE input. Record the output source/level and any remaining input/output processing below.")
+                                .font(.caption).foregroundStyle(.yellow)
+                            Text("The front SSL instrument-input check does not verify this line-level Kemper route.")
+                                .font(.caption).foregroundStyle(.secondary)
+                        }
+                        TextField("Device note (e.g. Kemper PROFILER Stage)", text: $audio.captureContext.deviceNote)
+                            .disabled(audio.captureBusy || audio.calibrationDraft != nil)
+                        TextField("Firmware (optional)", text: $audio.captureContext.firmwareNote)
+                            .disabled(audio.captureBusy || audio.calibrationDraft != nil)
+                        TextField("Output source / level / processing notes", text: $audio.captureContext.outputNote)
+                            .disabled(audio.captureBusy || audio.calibrationDraft != nil)
                         TextField("Guitar volume setting (optional)", text: $audio.captureContext.guitarVolume)
                             .disabled(audio.captureBusy || audio.calibrationDraft != nil)
                         TextField("Guitar tone setting (optional)", text: $audio.captureContext.guitarTone)

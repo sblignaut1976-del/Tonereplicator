@@ -44,13 +44,16 @@ will refuse schema 2. Never delete or reset the project to resolve a loading err
 Start with **the Fender bridge pickup only**. All positions do not need to be tested
 before this gate passes. Other guitars/positions/modes can get separate captures later.
 
-1. Build with the script above. It must finish all **8 XCTest tests**, release build
+1. Build with the script above. It must finish all **10 XCTest tests**, release build
    and signing. If any fail, stop and return the first error.
 2. On HOME, start your working SSL route at 44.1 kHz. In MY GUITAR, use the Fender
    suggestion, confirm Player II Modified Telecaster SH / bridge Player II Noiseless
    Tele and correct any details before saving the configuration. These identities
    carry the user's source/verification attribution, not an independent source audit.
-3. Record the real guitar directly into the interface: single notes across the strings
+3. Choose the actual **Calibration signal path** before recording. The intended user
+   path is guitar → Kemper Stage, amp/cabinet/all effects bypassed → Monitor Output →
+   SSL rear line input. Record device/firmware, output source/level/processing and
+   gain notes. Verify this new physical route before capture. Then play single notes across the strings
    and a few chords throughout ten seconds, without changing pickup/control/gain.
    Enter optional control/gain notes before recording. Clipping, silence, invalid
    samples or lost frames must produce an unsaved error, not an accepted Base Tone.
@@ -71,6 +74,10 @@ WAVs stay local under the project's `Calibrations/` directory with unique filena
 The fingerprint is measured level and spectral power, not a tone-match percentage.
 Factory Data selection currently shows UNKNOWN: textual pickup specs alone do not
 provide a verified factory audio baseline. Source selection preserves calibration.
+
+Earlier successful captures were direct guitar-to-SSL; retain them as separate history.
+The new Kemper path needs its own measured capture. Legacy captures with no path field
+display UNSPECIFIED; loading never invents a path or loses volume/tone/gain notes.
 
 ## First live test
 

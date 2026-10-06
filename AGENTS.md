@@ -17,6 +17,11 @@ do not create a worktree unless the user asks.
 - Distinguish software, live audio and named hardware verification. Synthetic tests
   cannot substitute for physical validation.
 - Do not fabricate sources or claim to have audited unavailable Drive assets/manuals.
+- User's intended calibration/matching input path is guitar → Kemper PROFILER Stage
+  → SSL 2+ MKII. For Base Tone the user wants amp/cabinet/effects bypassed. Record
+  the actual signal path, firmware/output settings and interface mode; do not treat
+  a direct-interface capture as verification of the Kemper path. Keep earlier captures
+  and revalidate routing/calibration when the physical path changes.
 
 Run `make test` for the portable core; on macOS run `swift test` and
 `scripts/build-macos.sh`. Keep generated outputs ignored. The macOS binary must be

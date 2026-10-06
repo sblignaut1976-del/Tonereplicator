@@ -91,6 +91,10 @@ final class AudioSession: ObservableObject {
             error = "Start audio and select a saved guitar configuration before recording."
             return
         }
+        guard captureContext.path != .unspecified else {
+            error = CalibrationError.signalPathRequired.localizedDescription
+            return
+        }
         drainSamples() // Discard pre-recording backlog on the consumer thread.
         captureSamples = []; captureSamples.reserveCapacity(441_000)
         captureGuitarID = config.id; captureRoute = route; recordedContext = captureContext

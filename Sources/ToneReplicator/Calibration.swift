@@ -8,7 +8,7 @@ struct CalibrationDraft {
 }
 
 enum CalibrationError: LocalizedError {
-    case lostFrames, invalidSamples, clipped, quiet, analysisFailed
+    case lostFrames, invalidSamples, clipped, quiet, analysisFailed, signalPathRequired
     var errorDescription: String? {
         switch self {
         case .lostFrames: return "Some audio frames were lost. Close busy applications and record again."
@@ -16,6 +16,7 @@ enum CalibrationError: LocalizedError {
         case .clipped: return "The capture clipped. Lower the SSL input gain and record again."
         case .quiet: return "Not enough guitar signal was captured. Check the input and play throughout the recording."
         case .analysisFailed: return "The capture could not be analyzed at 44.1 kHz. Record again."
+        case .signalPathRequired: return "Choose the actual guitar signal path before recording."
         }
     }
 }
@@ -24,6 +25,7 @@ enum CalibrationAnalyzer {
     static func analyze(samples: [Float], guitarID: UUID, route: RoutingPreset,
                         context: CaptureContext, lostFrames: Bool, invalidSamples: Bool) throws -> CalibrationDraft {
         guard samples.count == 441_000 else { throw CalibrationError.analysisFailed }
+        guard context.path != .unspecified else { throw CalibrationError.signalPathRequired }
         guard !lostFrames else { throw CalibrationError.lostFrames }
         guard !invalidSamples else { throw CalibrationError.invalidSamples }
         var measured = TRFingerprint()

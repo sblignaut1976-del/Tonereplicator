@@ -23,10 +23,36 @@ struct GuitarIdentity: Codable, Equatable {
     var title: String { "\(manufacturer) \(model) · \(pickupPosition)" }
 }
 
+enum CalibrationPath: String, Codable, CaseIterable {
+    case unspecified = "Choose signal path"
+    case direct = "Guitar → interface instrument input"
+    case kemperBypass = "Guitar → Kemper Stage bypass → interface line input"
+    case other = "Other documented path"
+}
+
 struct CaptureContext: Codable, Equatable {
     var guitarVolume = ""
     var guitarTone = ""
     var interfaceGainNote = ""
+    var path: CalibrationPath = .unspecified
+    var deviceNote = ""
+    var firmwareNote = ""
+    var outputNote = ""
+
+    init(path: CalibrationPath = .unspecified) { self.path = path }
+    enum CodingKeys: String, CodingKey {
+        case guitarVolume, guitarTone, interfaceGainNote, path, deviceNote, firmwareNote, outputNote
+    }
+    init(from decoder: Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        guitarVolume = try c.decode(String.self, forKey: .guitarVolume)
+        guitarTone = try c.decode(String.self, forKey: .guitarTone)
+        interfaceGainNote = try c.decode(String.self, forKey: .interfaceGainNote)
+        path = try c.decodeIfPresent(CalibrationPath.self, forKey: .path) ?? .unspecified
+        deviceNote = try c.decodeIfPresent(String.self, forKey: .deviceNote) ?? ""
+        firmwareNote = try c.decodeIfPresent(String.self, forKey: .firmwareNote) ?? ""
+        outputNote = try c.decodeIfPresent(String.self, forKey: .outputNote) ?? ""
+    }
 }
 
 struct CalibrationFingerprint: Codable, Equatable {

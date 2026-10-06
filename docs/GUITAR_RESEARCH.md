@@ -12,6 +12,11 @@ neck Player II Modified Humbucker, bridge Player II Noiseless Tele, push/pull ne
 coil split. Manufacturer URL supplied:
 https://www.fender.com/products/player-ii-modified-telecaster-sh
 
+Subsequent user-supplied Fender serial lookup screenshot lists model **0147482360**,
+description **PLAYER II MOD TELE SH MN SSY**, date **07/2025**. Record those exact
+manufacturer-lookup fields; 2025 is supported by this result. Do not invent a build
+day or silently assign the retailer listing's color/fingerboard variant.
+
 Additional claimed data: neck DCR 7.75–7.85 kΩ; split about 4.07 kΩ; bridge DCR
 13.07–13.1 kΩ; stacked/noiseless bridge design; 500 kΩ pots and treble-bleed circuit.
 Original narrative does not associate each numerical value with a specific supporting

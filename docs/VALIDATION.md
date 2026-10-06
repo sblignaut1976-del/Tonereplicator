@@ -268,6 +268,48 @@ app restart and retained-history visibility remain pending.
   to confirm earlier captures remain after replacement.
 - M2 remains open until actual restart persistence result or explicit deferral.
 
+## 6 October 2026 — M2 restart/history gate
+
+- Asked user to quit/reopen M2 and verify Fender bridge `My Calibration → Saved
+  Base Tone` remained, with at least 2 retained calibrations after replacement.
+- User replied **"yes"**, then explicitly confirmed **"both passed"**.
+- Latest Base Tone/source persistence after actual app restart: **PASS — USER REPORTED**.
+- Previous capture retention after replacement: **PASS — USER REPORTED**.
+- **M2 measured-calibration live gate: PASS** for the user's Fender bridge / SSL
+  2+ MKII setup. Factory audio baseline remains unavailable; no independent research
+  verification, all-position calibration or Kemper compatibility claim is added.
+- M3 reference ingest/evidence work may proceed. First target song/part remains pending.
+
+## 6 October 2026 — Intended Kemper calibration path clarification
+
+- User states guitar will be used through Kemper PROFILER, using a clean setup with
+  no amps or pedals. Intended Base Tone path: guitar → Stage (amp/cabinet/all effects
+  bypassed) → SSL 2+ MKII → app at 44.1 kHz.
+- Need confirm whether prior successful Fender capture was direct to SSL or already
+  through Kemper, and which analog output/input mode will be used. Earlier tests
+  establish the app/SSL workflow, not a verified Kemper signal path.
+- Existing Base Tone/capture history remains intact. Do not relabel its path from
+  assumptions or silently replace it. Target/M3 work paused for this clarification.
+- A new signal-path metadata candidate will explicitly store calibration path and
+  user-provided device/firmware/output notes; legacy context lacking these fields
+  must decode as UNSPECIFIED while retaining original volume/tone/gain notes.
+- Next required hardware gate: verify the chosen Kemper bypass output reaches the
+  interface cleanly in line mode, then capture/save/restart with that exact path.
+
+## 6 October 2026 — Calibration path confirmed by user
+
+- Previous saved Fender calibration: **guitar directly into SSL**, explicitly confirmed.
+- Intended new path: **guitar → Kemper PROFILER Stage → Monitor Output → SSL 2+ MKII**.
+- User will perform a new calibration through Kemper; no need to retroactively
+  interpret the direct capture as a Kemper capture. Earlier captures stay retained.
+- Fender lookup screenshot supplied by user shows model **0147482360**, description
+  **PLAYER II MOD TELE SH MN SSY**, date **07/2025**. This supports model/year/variant
+  metadata as a user-supplied manufacturer lookup result. No exact build day is shown.
+- Kemper Monitor-to-interface line-level routing and new bypass calibration: **PENDING**.
+- Signal-path metadata candidate adds 2 Swift tests (10 total); new tests/native
+  compilation are **UNRUN** until a Mac rebuild. Existing 8-test M2 result remains valid
+  for the earlier version, not proof of this candidate's new compatibility behavior.
+
 ## Live result template
 
 - Date, build version/commit:
