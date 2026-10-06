@@ -494,6 +494,24 @@ app restart and retained-history visibility remain pending.
 - Requested native suite output before dependent M4 work, including the 48 kHz
   stereo conversion/repeatability test; 20-test result remains unconfirmed.
 
+## 6 October 2026 — Native TARGET suite passes
+
+- User supplied complete Mac `swift test --build-system native` log: **PASS, 20
+  XCTest tests executed, 0 failures** (13 Gear, 2 Project, 5 Target).
+- Verified test48kStereoImportPreservesOriginalAndProducesRepeatable44100Audio
+  explicitly passed: synthetic 48 kHz stereo source converted to 44.1 kHz, original
+  bytes retained, repeated analysis hashes equal, channel polarity preserved.
+- Five saved calibration selection/persistence test, evidence source/status rules,
+  target local-store reload, failed section cleanup and newer-library protection pass.
+- AVAudioFile logged that file storage cannot be noninterleaved while constructing
+  a test fixture; file processing buffer remains noninterleaved and output checks
+  passed. Native backend deprecation warning remains nonfatal. Extra Swift Testing
+  zero-test runner does not replace the 20 executed XCTest cases.
+- Local TARGET import/restart gate accepted with prior user live checks. M3 automatic
+  complete-chain song research, sourced evidence live checks and different-rate
+  real recording remain pending; no overall M3 completion claim. M4 may proceed from
+  the validated local reference workflow; real comparison/playback remain unimplemented.
+
 ## Live result template
 
 - Date, build version/commit:
