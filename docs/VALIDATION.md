@@ -382,6 +382,18 @@ app restart and retained-history visibility remain pending.
   new Kemper calibration remain **PENDING**. Installed build version not reconfirmed.
 - Earlier direct-SSL Base Tone remains retained and is not relabelled as Kemper audio.
 
+## 6 October 2026 — Stereo candidate Mac build failure and correction
+
+- User pulled through `2160879` and ran the Mac build script. Swift test compilation
+  failed at GearTests.swift's stereo WAV payload decoding expression: compiler unable
+  to type-check in reasonable time. No new XCTest pass or stereo hardware pass claimed.
+- Split decoding into explicit byte values and a loop, retaining the same assertion
+  that recorded Float32 stereo data preserves the first four interleaved samples.
+- Correction passes `git diff --check`. Swift is unavailable in the Linux workspace;
+  Mac rebuild and all 14 XCTest results remain **PENDING**.
+- CFString pointer and deprecated native backend messages were warnings; the supplied
+  log identifies the test expression as the build-stopping error.
+
 ## Live result template
 
 - Date, build version/commit:

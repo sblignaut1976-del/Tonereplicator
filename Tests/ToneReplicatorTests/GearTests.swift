@@ -170,11 +170,15 @@ final class GearTests: XCTestCase {
         XCTAssertEqual(try XCTUnwrap(draft.record.fingerprint.stereoCorrelation), -1, accuracy: 0.000001)
         XCTAssertEqual(draft.wav.count, 56 + 882_000 * 4)
         XCTAssertEqual(Array(draft.wav[20..<24]), [3, 0, 2, 0]) // Float32 stereo.
-        let payload: [UInt32] = draft.wav.dropFirst(56).withUnsafeBytes { bytes in
-            // Decode bytes explicitly; Data storage is not guaranteed UInt32-aligned.
-            stride(from: 0, to: 16, by: 4).map { offset in
-                UInt32(bytes[offset]) | UInt32(bytes[offset+1]) << 8 | UInt32(bytes[offset+2]) << 16 | UInt32(bytes[offset+3]) << 24
-            }
+        // Decode bytes explicitly; Data storage is not guaranteed UInt32-aligned.
+        let bytes = Array(draft.wav.dropFirst(56).prefix(16))
+        var payload: [UInt32] = []
+        for offset in stride(from: 0, to: 16, by: 4) {
+            let byte0 = UInt32(bytes[offset])
+            let byte1 = UInt32(bytes[offset + 1]) << 8
+            let byte2 = UInt32(bytes[offset + 2]) << 16
+            let byte3 = UInt32(bytes[offset + 3]) << 24
+            payload.append(byte0 | byte1 | byte2 | byte3)
         }
         XCTAssertEqual(payload, Array(samples.prefix(4)).map(\.bitPattern))
     }
