@@ -108,10 +108,13 @@ of Diagnostics and observed input/output/persistence results. If build fails, re
 the first compiler error and nearby lines. Do not send credentials. Record evidence
 in [the validation log](docs/VALIDATION.md). Live milestones require real results.
 
-HOME and MY GUITAR are active navigation. TARGET, MATCH and RIG remain roadmap labels.
-No simultaneous live/reference spectra, matching percentage, reference import, online
-research engine, Kemper controls, optimization or rig exports are implemented yet.
-No Kemper audio path or generic hardware certification is established by M1 testing.
+HOME, MY GUITAR and TARGET are active navigation. TARGET imports local mono/stereo
+audio, preserves the source and creates a 44.1 kHz analysis WAV for a chosen 1–30
+second section. Saved targets, song details and individual evidence claims persist
+locally. See [target import and live checks](docs/TARGET_IMPORT.md).
+Simultaneous live/reference spectra, playback, matching percentage, automated online
+research, Kemper controls, optimization and rig exports remain pending. Hardware
+results are scoped to the user reports recorded in the validation log.
 
 See [stack decision](docs/STACK_DECISION.md), [roadmap](docs/ROADMAP.md) and
 [source inventory](docs/SOURCES.md).

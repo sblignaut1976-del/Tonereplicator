@@ -3,9 +3,10 @@ import SwiftUI
 @main
 struct ToneReplicatorApp: App {
     @StateObject private var audio = AudioSession()
+    @StateObject private var target = TargetSession()
     var body: some Scene {
         WindowGroup("Tone Replicator") {
-            FoundationView(audio: audio)
+            FoundationView(audio: audio, target: target)
                 .frame(minWidth: 900, minHeight: 620)
                 .preferredColorScheme(.dark)
                 .onDisappear { audio.stop() }
@@ -16,6 +17,7 @@ struct ToneReplicatorApp: App {
 
 struct FoundationView: View {
     @ObservedObject var audio: AudioSession
+    @ObservedObject var target: TargetSession
     private let blue = Color(red: 0.25, green: 0.55, blue: 1)
     var body: some View {
         HStack(spacing: 0) {
@@ -25,19 +27,23 @@ struct FoundationView: View {
                 Button { audio.screen = .home } label: {
                     Label("HOME", systemImage: "house.fill").foregroundStyle(audio.screen == .home ? blue : .secondary)
                 }.buttonStyle(.plain)
-                Text("TARGET").foregroundStyle(.secondary)
+                Button { audio.screen = .target } label: {
+                    Label("TARGET", systemImage: "scope").foregroundStyle(audio.screen == .target ? blue : .secondary)
+                }.buttonStyle(.plain)
                 Button { audio.screen = .guitar } label: {
                     Label("MY GUITAR", systemImage: "guitars").foregroundStyle(audio.screen == .guitar ? blue : .secondary)
                 }.buttonStyle(.plain)
                 Text("MATCH").foregroundStyle(.secondary)
                 Text("RIG").foregroundStyle(.secondary)
                 Spacer()
-                Text("Calibration candidate\nM2 · Live validation pending")
+                Text("Tone Replicator 0.3.0\nTarget import candidate")
                     .font(.caption).foregroundStyle(.secondary)
             }.padding(28).frame(width: 205, alignment: .leading)
                 .background(Color(red: 0.055, green: 0.065, blue: 0.085))
             if audio.screen == .guitar {
                 GuitarView(audio: audio)
+            } else if audio.screen == .target {
+                TargetView(target: target)
             } else {
             ScrollView {
                 VStack(alignment: .leading, spacing: 26) {

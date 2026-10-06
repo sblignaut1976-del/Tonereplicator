@@ -442,6 +442,21 @@ app restart and retained-history visibility remain pending.
 - Five distinct physical captures, Kevin's installation and independent stereo
   left/right isolation remain untested; this result does not establish those checks.
 
+## 6 October 2026 — TARGET local import / manual evidence candidate 0.3.0
+
+- User authorizes next build with "ok go" after saved-calibration restart gate.
+- Implemented local reference selection, preserved full source, selected section
+  conversion to 44.1 kHz Float32 WAV, hashes, offline stereo energy fingerprint,
+  independent saved-target library and persistent recording/part metadata.
+- Added manual per-claim provenance/status UI; no automatic song research or
+  historical verification claim. Existing guitar/calibration project schema unchanged.
+- Added five native tests for conversion/channel polarity/hash repeatability,
+  original preservation, library restart, evidence rules, failed section cleanup
+  and protection of newer data. Total **20 XCTest tests defined, UNRUN for 0.3.0**.
+- Portable core: **PASS, 19 executed**. Whitespace diff: **PASS**.
+- Mac compilation, actual decoder/converter output and real import/restart live gate:
+  **PENDING**. M3 remains partial; M4 analyzer/playback/matching not started.
+
 ## Live result template
 
 - Date, build version/commit:

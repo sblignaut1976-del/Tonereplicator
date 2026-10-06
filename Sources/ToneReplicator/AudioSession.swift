@@ -5,7 +5,7 @@ import ToneCore
 
 @MainActor
 final class AudioSession: ObservableObject {
-    enum Screen { case home, guitar }
+    enum Screen { case home, target, guitar }
     enum CaptureStage { case idle, recording, analyzing, ready }
     @Published var screen = Screen.home
     @Published var guitarDraft = GuitarIdentity()
