@@ -3,8 +3,9 @@
 Dates use the user's Africa/Johannesburg timezone. No synthetic test is a hardware test.
 
 Latest status: **Mac build and 2 project tests PASS** on the user's Mac mini with
-Xcode 27.0. User reports app launch and moving live input meter without errors through
-an SSL 2+ MKII. Output, latency and the remaining live checks are pending; M1 is not complete.
+Xcode 27.0. User reports app launch, moving live input meter without errors, and working
+app-monitored headphone output through an SSL 2+ MKII. Latency and the remaining live
+checks are pending; M1 is not complete.
 
 ## 6 October 2026 — M1 foundation candidate / app 0.1.0
 
@@ -130,6 +131,20 @@ an SSL 2+ MKII. Output, latency and the remaining live checks are pending; M1 is
 - Next live step: headphones at low volume; disable hardware direct monitoring, enable
   `Listen through the app`, play and report audible output and perceived delay/noise.
 - M1 remains **NOT COMPLETE** pending the remaining live checks or explicit deferral.
+
+## 6 October 2026 — App-monitored headphone output
+
+- Same user-reported Mac mini / SSL 2+ MKII setup as the preceding input check.
+- Instructed steps: headphones at low volume, SSL MONITOR MIX fully toward USB to
+  exclude direct input monitoring, enable `Listen through the app`, play guitar.
+- Actual user response: **"working"**.
+- Live app-monitored output: **PASS — USER REPORTED**.
+- Latency, crackling and distortion were asked about but not explicitly described;
+  do not infer measured latency or a noise-quality result from the general reply.
+- Next gate: stop audio, quit app, reopen, verify saved interface/channel selection
+  and monitoring off by default, then restart audio and confirm input remains working.
+- M1 remains **NOT COMPLETE**; actual restart persistence, rate rejection, channel
+  isolation and reconnection tests are pending. Kemper hardware remains **UNRUN**.
 
 ## Live result template
 
