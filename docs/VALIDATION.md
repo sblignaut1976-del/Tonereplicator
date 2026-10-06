@@ -485,6 +485,15 @@ app restart and retained-history visibility remain pending.
   verification promotion. Sourced UNVERIFIED claim path remains untested live.
 - Preserved audio inspection and full native test output remain pending/unconfirmed.
 
+## 6 October 2026 — Preserved reference files inspected
+
+- User replies "yes 44.1" to the preserved-files and source-rate check: original
+  and analysis.wav visible; source reported as 44.1 kHz.
+- LIVE APP: **PASS, user-reported preserved asset visibility and canonical-source
+  import**. A different-rate source has not yet been tested live.
+- Requested native suite output before dependent M4 work, including the 48 kHz
+  stereo conversion/repeatability test; 20-test result remains unconfirmed.
+
 ## Live result template
 
 - Date, build version/commit:
