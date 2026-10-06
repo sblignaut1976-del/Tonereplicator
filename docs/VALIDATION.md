@@ -2,10 +2,8 @@
 
 Dates use the user's Africa/Johannesburg timezone. No synthetic test is a hardware test.
 
-Latest status: **Mac build and 2 project tests PASS** on the user's Mac mini with
-Xcode 27.0. User reports app launch, moving live input meter without errors, and working
-app-monitored headphone output through an SSL 2+ MKII. Latency and the remaining live
-checks are pending; M1 is not complete.
+Latest status: **M1 user-scoped live gate PASS** on Mac mini / Xcode 27.0 / SSL 2+ MKII.
+**M2 candidate pending** native compilation and actual guitar calibration/restart tests.
 
 ## 6 October 2026 — M1 foundation candidate / app 0.1.0
 
@@ -196,6 +194,43 @@ checks are pending; M1 is not complete.
 - Remaining foundation live check: stop audio, disconnect SSL USB, refresh discovery,
   reconnect and refresh, restart with the connected input and confirm meter/output.
 - M1 remains gated until this reconnect result or explicit deferral is recorded.
+
+## 6 October 2026 — Reconnect gate and M1 outcome
+
+- Instructed test: stop audio, disconnect SSL USB, refresh and expect disappearance;
+  reconnect, refresh, select SSL/Input 2, restart and verify meter/headphone output.
+- Actual user response: **"works"**.
+- Stopped-session disconnect/reconnect and restored input/output: **PASS — USER REPORTED**.
+- **M1 live gate: PASS for the user's Mac mini / SSL 2+ MKII setup**, based on user
+  confirmations of app launch, real Inputs 1/2, app-monitored output, persistence,
+  sample-rate safeguard and reconnection. This is scoped live validation, not a
+  universal hardware certification. Mid-session unplug recovery was not tested.
+- macOS version, numerical latency, driver version and recorded/screenshot evidence
+  remain unavailable. No Kemper audio path was involved or verified.
+- M2 calibration/persistence work may now proceed. Its real-calibration/restart gate
+  will remain separate from these M1 results.
+
+## 6 October 2026 — M2 software candidate / app 0.2.0
+
+- Scope: manual exact guitar/pickup configurations, persisted source selection,
+  ten-second local capture, measured level/24-band spectral fingerprint, explicit
+  save/replace with retained history, schema-1 backup/migration.
+- User guitar data: Fender Player II Modified Telecaster SH, bridge Player II Noiseless
+  Tele; Ibanez AZ224F with Seymour Duncan Hyperion, position/mode not yet supplied.
+  User says research is verified; sources are attributed as user verified, not independently
+  audited by this session. Numerical electrical claims retained in GUITAR_RESEARCH.md.
+- Portable core: **PASS**, 16 checks; added sine RMS, Hann FFT energy normalization,
+  correct band identity, silence, invalid rate/input and quality-failure counters.
+- Address/undefined-behavior sanitizer run: **PASS**, same 16 checks, no findings.
+- Native Swift suite: **UNRUN for M2**; 8 tests defined, including prior 2 tests plus
+  replacement/history, separate pickups/source persistence, migration/backup, refusing
+  overwrite of newer project, measured capture/WAV and bad-capture rejection.
+- Native capture UI and schema migration are not verified by Linux tests.
+- Build script shell syntax: **PASS**. Native compilation and real audio capture/save
+  and restart/replacement gate: **PENDING**, instructions in README.
+- First live calibration target: **Fender bridge only**. Testing every pickup position
+  is unnecessary for the initial M2 gate; add independent configurations later.
+- No later dependent matching/target/Kemper milestone advanced.
 
 ## Live result template
 

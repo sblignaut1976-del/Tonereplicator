@@ -22,15 +22,23 @@ struct FoundationView: View {
             VStack(alignment: .leading, spacing: 26) {
                 Image(systemName: "waveform").font(.system(size: 30)).foregroundStyle(blue)
                 Text("TONE\nREPLICATOR").font(.system(size: 19, weight: .bold, design: .rounded))
-                Label("HOME", systemImage: "house.fill").foregroundStyle(blue)
-                ForEach(["TARGET", "MY GUITAR", "MATCH", "RIG"], id: \.self) { title in
-                    Text(title).foregroundStyle(.secondary)
-                }
+                Button { audio.screen = .home } label: {
+                    Label("HOME", systemImage: "house.fill").foregroundStyle(audio.screen == .home ? blue : .secondary)
+                }.buttonStyle(.plain)
+                Text("TARGET").foregroundStyle(.secondary)
+                Button { audio.screen = .guitar } label: {
+                    Label("MY GUITAR", systemImage: "guitars").foregroundStyle(audio.screen == .guitar ? blue : .secondary)
+                }.buttonStyle(.plain)
+                Text("MATCH").foregroundStyle(.secondary)
+                Text("RIG").foregroundStyle(.secondary)
                 Spacer()
-                Text("Foundation build\nM1 · Live validation pending")
+                Text("Calibration candidate\nM2 · Live validation pending")
                     .font(.caption).foregroundStyle(.secondary)
             }.padding(28).frame(width: 205, alignment: .leading)
                 .background(Color(red: 0.055, green: 0.065, blue: 0.085))
+            if audio.screen == .guitar {
+                GuitarView(audio: audio)
+            } else {
             ScrollView {
                 VStack(alignment: .leading, spacing: 26) {
                     Text("Your sound starts here.").font(.system(size: 34, weight: .semibold))
@@ -89,17 +97,18 @@ struct FoundationView: View {
                                 Text("Received frames: \(audio.frames)")
                                 Text("Invalid samples: \(audio.invalid)")
                                 Text(String(format: "Peak %.1f dBFS · RMS %.1f dBFS", 20 * log10(max(audio.peak, 0.000001)), 20 * log10(max(audio.rms, 0.000001))))
-                                Text("Meters show measured input only. Matching and hardware latency have not been validated.")
+                                Text("Meters show measured input only. Matching and numerical latency have not been validated.")
                             }.font(.caption.monospaced()).padding(.top, 8)
                         }
                     }.padding(24).background(.white.opacity(0.035), in: RoundedRectangle(cornerRadius: 18))
                     if let error = audio.error {
                         Label(error, systemImage: "exclamationmark.triangle").foregroundStyle(.yellow)
                     }
-                    Text("Next: validate your interface on a Mac, then build your Guitar & Base Tone workflow.")
+                    Text("Choose MY GUITAR to save your guitar and record its Base Tone.")
                         .font(.caption).foregroundStyle(.secondary)
                 }.padding(38)
             }.background(Color(red: 0.075, green: 0.085, blue: 0.105))
+            }
         }
     }
 }

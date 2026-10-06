@@ -18,7 +18,7 @@ final class ProjectTests: XCTestCase {
         try FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true)
         defer { try? FileManager.default.removeItem(at: dir) }
         let store = ProjectStore(url: dir.appendingPathComponent("project.json"))
-        for text in ["{\"schemaVersion\":2,\"analysisRate\":44100}", "{\"schemaVersion\":1,\"analysisRate\":48000}", "broken"] {
+        for text in ["{\"schemaVersion\":3,\"analysisRate\":44100}", "{\"schemaVersion\":1,\"analysisRate\":48000}", "broken"] {
             let data = Data(text.utf8); try data.write(to: store.url)
             XCTAssertThrowsError(try store.load())
             XCTAssertEqual(try Data(contentsOf: store.url), data)

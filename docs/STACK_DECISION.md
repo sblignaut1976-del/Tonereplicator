@@ -23,8 +23,9 @@ block, access files or perform network operations. Framework callback scheduling
 end-to-end latency remain unverified until Mac testing. A direct AudioUnit callback
 may replace the tap if measured latency requires it.
 
-M1 only measures input level: it does not implement sample-rate conversion, FFT,
-tone matching, reference playback or research. Import conversion must be designed and
+M1 measured input level. M2 adds an offline Hann FFT spectral-power fingerprint for
+actual captured guitar samples; it does not implement a simultaneous live analyzer,
+sample-rate conversion, tone matching, reference playback or research. Import conversion must be designed and
 tested before M3; unsupported rates are rejected rather than silently analyzed at
 another rate. M4 requires real spectra and benchmarked alignment/similarity metrics.
 
