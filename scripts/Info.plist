@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0"><dict>
+    <key>CFBundleName</key><string>Tone Replicator</string>
+    <key>CFBundleDisplayName</key><string>Tone Replicator</string>
+    <key>CFBundleExecutable</key><string>ToneReplicator</string>
+    <key>CFBundleIdentifier</key><string>com.tonereplicator.foundation</string>
+    <key>CFBundlePackageType</key><string>APPL</string>
+    <key>CFBundleShortVersionString</key><string>0.1.0</string>
+    <key>CFBundleVersion</key><string>1</string>
+    <key>LSMinimumSystemVersion</key><string>14.0</string>
+    <key>NSHighResolutionCapable</key><true/>
+    <key>NSMicrophoneUsageDescription</key><string>Tone Replicator measures your guitar input locally for calibration and tone comparison.</string>
+</dict></plist>
