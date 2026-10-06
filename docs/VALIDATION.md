@@ -457,6 +457,18 @@ app restart and retained-history visibility remain pending.
 - Mac compilation, actual decoder/converter output and real import/restart live gate:
   **PENDING**. M3 remains partial; M4 analyzer/playback/matching not started.
 
+## 6 October 2026 — TARGET real reference import confirmation
+
+- User initially reported inactive TARGET. PlistBuddy output showed installed
+  bundle 0.2.3; after pull/build instructions user reported "yes passed". No full
+  0.3.0 build/test log supplied, so all 20 XCTest results remain unconfirmed.
+- User then explicitly confirms importing a real reference on TARGET displays
+  "Measured reference · 44.1 kHz": **PASS, user-reported real reference ingest**.
+- Exact source file format/rate and whether resampling was exercised are unknown.
+  Do not infer a 48 kHz conversion pass from the 44.1 kHz analysis label.
+- Target metadata/evidence restart retention and preserved-file inspection remain
+  **PENDING**. M4 live playback/comparison gate has not been started.
+
 ## Live result template
 
 - Date, build version/commit:
