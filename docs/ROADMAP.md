@@ -2,7 +2,7 @@
 
 | Milestone | Scope | State |
 | --- | --- | --- |
-| M1 | Foundation, canonical rate contracts, CoreAudio discovery, routing/settings | Portable core and Mac build/2 project tests passed; user confirms app launch and SSL 2+ MKII live input/output; persistence, rate, reconnection and latency checks pending |
+| M1 | Foundation, canonical rate contracts, CoreAudio discovery, routing/settings | Portable core and Mac build/2 project tests passed; user confirms SSL 2+ MKII input/output, restart persistence, listening check and rate safeguard; alternate-channel routing and reconnection checks pending |
 | M2 | Exact guitar, Gear Vault, persistent selectable factory/calibrated Base Tone | Not started; depends on M1 live pass or explicit deferral |
 | M3 | Preserved originals, deterministic 44.1 kHz ingest, target evidence/research | Not started |
 | M4 | Real simultaneous red/green spectra, defined similarity, A/B | Not started; live gate required |

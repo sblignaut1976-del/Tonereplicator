@@ -172,6 +172,18 @@ checks are pending; M1 is not complete.
   verify startup refuses it, restore 44,100 Hz and verify audio restarts.
 - Channel isolation and disconnect/reconnect are also pending. M1 remains gated.
 
+## 6 October 2026 — Sample-rate safeguard
+
+- Instructed test: stop audio, select 48,000 Hz for SSL in Audio MIDI Setup, attempt
+  startup and expect refusal, then restore 44,100 Hz and restart successfully.
+- Asked whether it rejected 48 kHz and worked again at 44.1 kHz.
+- Actual response: **"yes works"**.
+- 48 kHz startup rejection and restored 44.1 kHz operation: **PASS — USER REPORTED**.
+- No screenshot or independently measured clock rate supplied; result is a user's
+  confirmation of the specified functional test, not a sample-rate-conversion test.
+- Next checks: alternate input-channel routing and interface reconnection.
+- M1 live checks remain open; no calibration, matching or Kemper feature advanced.
+
 ## Live result template
 
 - Date, build version/commit:
