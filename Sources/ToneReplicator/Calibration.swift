@@ -40,7 +40,8 @@ enum CalibrationAnalyzer {
             return result
         }
         let measured = try measure(left)
-        let other = channels == 2 ? try measure(right) : measured
+        let other: TRFingerprint
+        if channels == 2 { other = try measure(right) } else { other = measured }
         guard measured.invalid == 0 && other.invalid == 0 else { throw CalibrationError.invalidSamples }
         guard measured.clipped == 0 && other.clipped == 0 else { throw CalibrationError.clipped }
         let rms = sqrt((measured.rms * measured.rms + other.rms * other.rms) / 2)

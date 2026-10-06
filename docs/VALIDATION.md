@@ -357,6 +357,17 @@ app restart and retained-history visibility remain pending.
 - Current hardware route has no app signal; remains **UNRESOLVED**, no new capture
   or target/matching milestone accepted. Prior direct-input results remain scoped.
 
+## 6 October 2026 — Rear-input label correction
+
+- User corrects prior socket identification: rear **inputs are 1 and 2**.
+- Intended stereo incoming path is Kemper Monitor L/R → SSL rear Inputs 1/2, while
+  speaker/listening output selection is independent. Earlier app Input 3 selection
+  did not correspond to these confirmed physical incoming sockets.
+- Next diagnostic with current app: stop audio, select Input 1, use rear LINE mode,
+  restart and play; confirm the app receives the Kemper signal before new calibration.
+- Stereo candidate should use Inputs 1/2 after Mac build/test; output pair must match
+  the actual speaker/headphone connection. No corrected-route result reported yet.
+
 ## Live result template
 
 - Date, build version/commit:
