@@ -469,6 +469,14 @@ app restart and retained-history visibility remain pending.
 - Target metadata/evidence restart retention and preserved-file inspection remain
   **PENDING**. M4 live playback/comparison gate has not been started.
 
+## 6 October 2026 — TARGET metadata restart confirmation
+
+- User explicitly confirms the imported reference, song title and artist remain
+  on TARGET after quitting and reopening the app.
+- LIVE APP: **PASS, user-reported target selection and metadata restart retention**.
+- Per-claim evidence statuses, preserved asset inspection and native 20-test log
+  remain pending/unconfirmed. No additional conversion-rate or playback claim made.
+
 ## Live result template
 
 - Date, build version/commit:
