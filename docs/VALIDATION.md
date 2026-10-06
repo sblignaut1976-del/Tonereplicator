@@ -2,6 +2,9 @@
 
 Dates use the user's Africa/Johannesburg timezone. No synthetic test is a hardware test.
 
+Latest status: **Mac build and 2 project tests PASS** on the user's Mac mini with
+Xcode 27.0. App launch, permissions and real input/output remain pending; M1 is not complete.
+
 ## 6 October 2026 — M1 foundation candidate / app 0.1.0
 
 - Build identity: M1 foundation candidate, app 0.1.0. Use `git rev-parse HEAD`
@@ -82,6 +85,29 @@ Dates use the user's Africa/Johannesburg timezone. No synthetic test is a hardwa
   setup are required. Whether Xcode is already installed has not been confirmed.
 - Script now fails early with this prerequisite explanation. Mac retry, Swift tests,
   release compilation and live input/output remain pending.
+
+## 6 October 2026 — Full-Xcode build succeeds
+
+- Host: user's Mac mini; macOS version and interface still unconfirmed.
+- Selected full Xcode: **27.0**, build **27A266a**.
+- Tested source: original `1ef4a57` ZIP plus the supplied local Diagnostics/native
+  backend repair commands. The exact local tree differs from subsequent repository
+  documentation/preflight commits; no claim of a newer checkout test is made.
+- User command: `bash scripts/build-macos.sh`.
+- XCTest: **PASS**, 2 tests executed, 0 failures: persisted routing round-trip and
+  rejection/preservation of invalid/newer project data.
+- Additional Swift Testing runner: 0 tests discovered; no additional coverage claimed.
+- Native debug/test compilation and release compilation: **PASS**.
+- App bundle creation, local ad-hoc signing and signature verification: **PASS**,
+  evidenced by the script reaching `Built build/Tone Replicator.app` after its
+  required checks. Not a distribution signature or notarization claim.
+- Remaining warnings: fixed-value Codable property, CFString pointer bridging and
+  deprecated native SwiftPM backend. Not resolved or described as fatal errors.
+- App launch and microphone permission: **PENDING**.
+- Real 44.1 kHz input/output, selected-channel correctness, persistence after actual
+  app restart, disconnection handling and latency: **PENDING**.
+- Kemper hardware/Rig Manager compatibility: **UNRUN**.
+- M1: **NOT COMPLETE** until the live gate passes or is explicitly deferred.
 
 ## Live result template
 
