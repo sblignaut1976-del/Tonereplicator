@@ -3,7 +3,8 @@
 Dates use the user's Africa/Johannesburg timezone. No synthetic test is a hardware test.
 
 Latest status: **M1 user-scoped live gate PASS** on Mac mini / Xcode 27.0 / SSL 2+ MKII.
-**M2 candidate pending** native compilation and actual guitar calibration/restart tests.
+**M2 native build and 8 tests PASS** on the user's Mac; actual guitar calibration,
+save/restart and replacement checks remain pending.
 
 ## 6 October 2026 — M1 foundation candidate / app 0.1.0
 
@@ -231,6 +232,23 @@ Latest status: **M1 user-scoped live gate PASS** on Mac mini / Xcode 27.0 / SSL 
 - First live calibration target: **Fender bridge only**. Testing every pickup position
   is unnecessary for the initial M2 gate; add independent configurations later.
 - No later dependent matching/target/Kemper milestone advanced.
+
+## 6 October 2026 — M2 Mac build and automated tests
+
+- User cloned `codex/m1-foundation` into `Downloads/ToneReplicator-M2`, then ran the
+  documented build script and app-opening command. Published candidate: `a2aeb1d`.
+- Native debug/test compilation: **PASS**. XCTest: **PASS**, 8 tests executed,
+  0 failures (6 GearTests + 2 ProjectTests).
+- Passed cases: capture-quality rejection, measured capture/WAV encoding, separate
+  pickups/source persistence, explicit replacement/history, newer-project overwrite
+  protection, schema-1 migration/backup, invalid/newer data preservation and routing.
+- Additional Swift Testing runner found 0 tests; no additional coverage claimed.
+- Native release compilation, bundle creation and local signing/verification: **PASS**,
+  script reached `Built build/Tone Replicator.app`.
+- Warnings remain: CFString pointer bridging and deprecated native build backend.
+- App open command was issued; actual M2 window/capture behavior not yet reported.
+- Real Fender bridge calibration, explicit save, restart persistence and replacement
+  guard remain **PENDING**. Synthetic tests do not establish these live results.
 
 ## Live result template
 
