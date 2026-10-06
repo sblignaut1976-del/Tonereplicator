@@ -184,6 +184,19 @@ checks are pending; M1 is not complete.
 - Next checks: alternate input-channel routing and interface reconnection.
 - M1 live checks remain open; no calibration, matching or Kemper feature advanced.
 
+## 6 October 2026 — Alternate input routing
+
+- Instructed test: stop audio, move guitar cable to SSL front Input 2 instrument
+  socket, select app Input 2, start audio, enable app monitoring and play.
+- Expected result: responsive live meter and normal audible guitar output.
+- Actual user response: **"passed"**.
+- Input 2 routing/meter/app-monitored output: **PASS — USER REPORTED**.
+- This verifies the specified alternate-channel test; deliberate wrong-channel
+  silence was not tested and is not claimed.
+- Remaining foundation live check: stop audio, disconnect SSL USB, refresh discovery,
+  reconnect and refresh, restart with the connected input and confirm meter/output.
+- M1 remains gated until this reconnect result or explicit deferral is recorded.
+
 ## Live result template
 
 - Date, build version/commit:
