@@ -3,8 +3,9 @@
 Dates use the user's Africa/Johannesburg timezone. No synthetic test is a hardware test.
 
 Latest status: **M1 user-scoped live gate PASS** on Mac mini / Xcode 27.0 / SSL 2+ MKII.
-**M2 native build and 8 tests PASS** on the user's Mac; actual guitar calibration,
-save/restart and replacement checks remain pending.
+**M2 native build and 8 tests PASS** on the user's Mac. User reports actual Fender
+calibration/save and replacement working; persistence of the latest Base Tone after
+app restart and retained-history visibility remain pending.
 
 ## 6 October 2026 — M1 foundation candidate / app 0.1.0
 
@@ -249,6 +250,23 @@ save/restart and replacement checks remain pending.
 - App open command was issued; actual M2 window/capture behavior not yet reported.
 - Real Fender bridge calibration, explicit save, restart persistence and replacement
   guard remain **PENDING**. Synthetic tests do not establish these live results.
+
+## 6 October 2026 — Real Fender calibration and replacement
+
+- Instructed setup: Fender Player II Modified Telecaster SH, bridge pickup, volume
+  and tone fully up; user entered 10 in both control-context fields.
+- Instructed capture: selected SSL input, ten seconds of individual notes/chords,
+  then explicit Save Base Tone after Recording ready.
+- Actual user report: **"al that works i even tested replace tone"**.
+- Real capture and explicit save: **PASS — USER REPORTED**.
+- Explicit replacement workflow: **PASS — USER REPORTED**.
+- User did not provide capture IDs, wave file, measured values or retained-history
+  counts. Replacement cancel behavior/history visibility are not independently
+  established by the general report; automated history/replacement tests passed.
+- Required next live gate: quit/reopen M2, verify the latest Fender bridge Base Tone
+  and My Calibration source persist. Check Retained calibrations count under sources
+  to confirm earlier captures remain after replacement.
+- M2 remains open until actual restart persistence result or explicit deferral.
 
 ## Live result template
 

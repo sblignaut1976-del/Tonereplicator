@@ -3,7 +3,7 @@
 | Milestone | Scope | State |
 | --- | --- | --- |
 | M1 | Foundation, canonical rate contracts, CoreAudio discovery, routing/settings | PASS — user-scoped Mac mini / SSL 2+ MKII live gate; numerical latency and universal compatibility unclaimed |
-| M2 | Exact guitar, Gear Vault, persistent selectable factory/calibrated Base Tone | Portable DSP and user's native build/8 tests PASS; actual guitar calibration/save/restart gate pending; verified factory audio dataset unavailable |
+| M2 | Exact guitar, Gear Vault, persistent selectable factory/calibrated Base Tone | Portable DSP and native build/8 tests PASS; user reports real Fender capture/save and replacement PASS; latest Base Tone restart persistence pending; verified factory audio dataset unavailable |
 | M3 | Preserved originals, deterministic 44.1 kHz ingest, target evidence/research | Not started |
 | M4 | Real simultaneous red/green spectra, defined similarity, A/B | Not started; live gate required |
 | M5 | Source/version-backed Kemper registry and validated translator | Not started; manuals inventoried, parameter data not yet audited |
