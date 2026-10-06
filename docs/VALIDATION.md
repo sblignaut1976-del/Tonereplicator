@@ -160,6 +160,18 @@ checks are pending; M1 is not complete.
   48 kHz rejection, channel isolation and reconnection checks are still pending.
 - M1 remains **NOT COMPLETE**; no dependent calibration/matching work advanced.
 
+## 6 October 2026 — Audio restart and listening check
+
+- Instructed user to start audio after reopening, enable app monitoring and play short
+  notes; asked whether sound worked and whether picking-to-headphone delay was audible.
+- Actual response: **"still ok"**.
+- Audio restart and app-monitored playback: **PASS — USER REPORTED**.
+- Listening check: user reports no issue; no numerical latency measurement, recording
+  or explicit noise measurement provided. Do not claim a measured latency bound.
+- Next live safeguard check: stop audio, switch SSL to 48,000 Hz in Audio MIDI Setup,
+  verify startup refuses it, restore 44,100 Hz and verify audio restarts.
+- Channel isolation and disconnect/reconnect are also pending. M1 remains gated.
+
 ## Live result template
 
 - Date, build version/commit:
