@@ -148,4 +148,34 @@ final class GearTests: XCTestCase {
         XCTAssertEqual(try first.load(), firstProject)
         XCTAssertEqual(try second.load(), secondProject)
     }
+    func testLegacyRoutingDefaultsAndStereoPairPersistence() throws {
+        let original = Data("{\"inputUID\":\"fixture\",\"outputUID\":\"fixture\",\"inputChannel\":1}".utf8)
+        var route = try JSONDecoder().decode(RoutingPreset.self, from: original)
+        XCTAssertFalse(route.stereo); XCTAssertEqual(route.outputChannel, 0)
+        route.stereo = true; route.inputChannel = 2; route.outputChannel = 2
+        XCTAssertEqual(try JSONDecoder().decode(RoutingPreset.self, from: JSONEncoder().encode(route)), route)
+    }
+    func testStereoCapturePreservesChannelsAndAvoidsPhaseCancellation() throws {
+        var samples: [Float] = []; samples.reserveCapacity(882_000)
+        for i in 0..<441_000 {
+            let value = 0.25 * Float(sin(2 * Double.pi * 1000 * Double(i) / 44_100))
+            samples.append(value); samples.append(-value)
+        }
+        var route = RoutingPreset(); route.stereo = true; route.inputChannel = 2
+        let draft = try CalibrationAnalyzer.analyze(samples: samples, guitarID: UUID(), route: route,
+            context: CaptureContext(path: .kemperBypass), lostFrames: false, invalidSamples: false)
+        XCTAssertEqual(draft.record.channelCount, 2)
+        XCTAssertEqual(draft.record.fingerprint.frames, 441_000)
+        XCTAssertEqual(draft.record.fingerprint.rms, 0.25 / sqrt(2), accuracy: 0.00001)
+        XCTAssertEqual(try XCTUnwrap(draft.record.fingerprint.stereoCorrelation), -1, accuracy: 0.000001)
+        XCTAssertEqual(draft.wav.count, 56 + 882_000 * 4)
+        XCTAssertEqual(Array(draft.wav[20..<24]), [3, 0, 2, 0]) // Float32 stereo.
+        let payload: [UInt32] = draft.wav.dropFirst(56).withUnsafeBytes { bytes in
+            // Decode bytes explicitly; Data storage is not guaranteed UInt32-aligned.
+            stride(from: 0, to: 16, by: 4).map { offset in
+                UInt32(bytes[offset]) | UInt32(bytes[offset+1]) << 8 | UInt32(bytes[offset+2]) << 16 | UInt32(bytes[offset+3]) << 24
+            }
+        }
+        XCTAssertEqual(payload, Array(samples.prefix(4)).map(\.bitPattern))
+    }
 }

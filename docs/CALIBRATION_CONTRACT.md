@@ -17,6 +17,10 @@ as user-entered capture context.
 Calibration fingerprint v1: mono 44.1 kHz, peak/RMS/DC, clipping/nonfinite counts,
 24 logarithmic power bands from 40–20,000 Hz, Hann-windowed 2048-point double-precision
 FFT, hop 1024; window energy normalization and one-sided bin energy. This is measured
+Stereo capture preserves original left/right samples and uses energy-average levels
+and spectral bands, with a separate DC-centered correlation metric. It does not
+downmix opposite-phase channels into a false silent calibration. Route metadata
+records a starting input channel plus mono/stereo and a separate listening output pair.
 behavior, not historical settings, a pickup specification, a match score or recovered
 studio equipment. Reject input at unsupported rates rather than converting it here.
 

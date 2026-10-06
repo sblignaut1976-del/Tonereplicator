@@ -72,6 +72,7 @@ struct CalibrationFingerprint: Codable, Equatable {
     let rms: Double
     let dc: Double
     let bandDB: [Double]
+    var stereoCorrelation: Double? = nil
 }
 
 struct SavedCalibration: Codable, Equatable, Identifiable {
@@ -82,6 +83,8 @@ struct SavedCalibration: Codable, Equatable, Identifiable {
     let interfaceUID: String
     let inputChannel: UInt32
     let context: CaptureContext
+    var channels: Int? = nil
+    var channelCount: Int { channels ?? 1 }
 }
 
 struct GuitarConfiguration: Codable, Equatable, Identifiable {

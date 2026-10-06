@@ -39,6 +39,20 @@ void tr_meter_process(TRMeter *m, const float *s, uint32_t n) {
     m->frames.fetch_add(n, std::memory_order_release);
 }
 float tr_meter_peak(const TRMeter *m) { return m ? m->peak.load() : 0; }
+void tr_meter_process_pair(TRMeter *m, const float *left, const float *right, uint32_t n) {
+    if (!m || !left || !right || !n) return;
+    float peak=0; double energy=0; uint64_t invalid=0;
+    for (uint32_t i=0;i<n;++i) {
+        for (const float value : {left[i],right[i]}) {
+            if (!std::isfinite(value)) { ++invalid; continue; }
+            peak=std::max(peak,std::abs(value)); energy+=double(value)*value;
+        }
+    }
+    m->peak.store(peak,std::memory_order_relaxed);
+    m->rms.store(float(std::sqrt(energy/(2.0*n))),std::memory_order_relaxed);
+    m->invalid.fetch_add(invalid,std::memory_order_relaxed);
+    m->frames.fetch_add(n,std::memory_order_release);
+}
 float tr_meter_rms(const TRMeter *m) { return m ? m->rms.load() : 0; }
 uint64_t tr_meter_frames(const TRMeter *m) { return m ? m->frames.load() : 0; }
 uint64_t tr_meter_invalid(const TRMeter *m) { return m ? m->invalid.load() : 0; }
@@ -64,6 +78,19 @@ uint32_t tr_queue_pop(TRSampleQueue *q, float *s, uint32_t n) {
     const auto take = uint32_t(std::min<uint64_t>(n, w-r));
     for (uint32_t i=0; i<take; ++i) s[i] = q->buffer[(r+i)%q->buffer.size()];
     q->read.store(r+take, std::memory_order_release);
+    return take;
+}
+uint32_t tr_queue_push_pair(TRSampleQueue *q, const float *left, const float *right, uint32_t n) {
+    if (!q || !left || !right) return 0;
+    const auto w=q->write.load(std::memory_order_relaxed);
+    const auto r=q->read.load(std::memory_order_acquire);
+    const auto take=uint32_t(std::min<uint64_t>(n,(q->buffer.size()-(w-r))/2));
+    for (uint32_t i=0;i<take;++i) {
+        q->buffer[(w+2*i)%q->buffer.size()]=left[i];
+        q->buffer[(w+2*i+1)%q->buffer.size()]=right[i];
+    }
+    q->write.store(w+2*take,std::memory_order_release);
+    q->dropped.fetch_add(2*(uint64_t(n)-take),std::memory_order_relaxed);
     return take;
 }
 uint64_t tr_queue_dropped(const TRSampleQueue *q) { return q ? q->dropped.load() : 0; }

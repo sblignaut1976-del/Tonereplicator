@@ -14,6 +14,7 @@ int tr_rate_supported(double rate);
 int tr_route_valid(uint32_t channel, uint32_t available);
 /* One callback writer, any telemetry readers. Nonfinite samples count as invalid. */
 void tr_meter_process(TRMeter *meter, const float *samples, uint32_t count);
+void tr_meter_process_pair(TRMeter *meter, const float *left, const float *right, uint32_t frames);
 float tr_meter_peak(const TRMeter *meter);
 float tr_meter_rms(const TRMeter *meter);
 uint64_t tr_meter_frames(const TRMeter *meter);
@@ -22,6 +23,9 @@ uint64_t tr_meter_invalid(const TRMeter *meter);
 TRSampleQueue *tr_queue_create(uint32_t capacity);
 void tr_queue_destroy(TRSampleQueue *queue);
 uint32_t tr_queue_push(TRSampleQueue *queue, const float *samples, uint32_t count);
+/* Stereo push returns accepted frames; queue storage/pop/drop counters count samples.
+   Writes whole interleaved L/R frames, without allocations. */
+uint32_t tr_queue_push_pair(TRSampleQueue *queue, const float *left, const float *right, uint32_t frames);
 uint32_t tr_queue_pop(TRSampleQueue *queue, float *samples, uint32_t count);
 uint64_t tr_queue_dropped(const TRSampleQueue *queue);
 #define TR_FINGERPRINT_BANDS 24

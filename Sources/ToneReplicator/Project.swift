@@ -4,10 +4,27 @@ struct RoutingPreset: Codable, Equatable {
     var inputUID = ""
     var outputUID = ""
     var inputChannel: UInt32 = 0
+    var stereo = false
+    var outputChannel: UInt32 = 0
     // DI/reamp routing is reserved data, not a claim of implemented reamping.
     var diChannel: UInt32? = nil
     var reampSend: UInt32? = nil
     var reampReturn: UInt32? = nil
+    init() {}
+    enum CodingKeys: String, CodingKey {
+        case inputUID, outputUID, inputChannel, stereo, outputChannel, diChannel, reampSend, reampReturn
+    }
+    init(from decoder: Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        inputUID = try c.decode(String.self, forKey: .inputUID)
+        outputUID = try c.decode(String.self, forKey: .outputUID)
+        inputChannel = try c.decode(UInt32.self, forKey: .inputChannel)
+        stereo = try c.decodeIfPresent(Bool.self, forKey: .stereo) ?? false
+        outputChannel = try c.decodeIfPresent(UInt32.self, forKey: .outputChannel) ?? 0
+        diChannel = try c.decodeIfPresent(UInt32.self, forKey: .diChannel)
+        reampSend = try c.decodeIfPresent(UInt32.self, forKey: .reampSend)
+        reampReturn = try c.decodeIfPresent(UInt32.self, forKey: .reampReturn)
+    }
 }
 
 struct Project: Codable, Equatable {
@@ -43,7 +60,11 @@ struct Project: Codable, Equatable {
                       Set(config.calibrations.map(\.id)).count == config.calibrations.count,
                       config.activeCalibrationID == nil || config.baseTone != nil else { throw ProjectError.invalidGear }
                 for record in config.calibrations {
-                    guard record.fingerprint.sampleRate == 44_100, record.fingerprint.bandDB.count == 24,
+                    if let correlation = record.fingerprint.stereoCorrelation {
+                        guard correlation.isFinite, correlation >= -1, correlation <= 1 else { throw ProjectError.invalidGear }
+                    }
+                    guard (record.channelCount == 1 || record.channelCount == 2),
+                          record.fingerprint.sampleRate == 44_100, record.fingerprint.bandDB.count == 24,
                           record.fingerprint.frames == 441_000,
                           record.wavFilename == "\(record.id.uuidString).wav",
                           [record.fingerprint.rms, record.fingerprint.peak, record.fingerprint.dc].allSatisfy(\.isFinite),

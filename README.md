@@ -8,7 +8,8 @@ Current scope: CoreAudio interface discovery, saved per-interface routing, expli
 44.1 kHz validation, native Home screen, real input peak/RMS meter, optional local
 monitoring, a multi-guitar Gear Vault and ten-second measured calibration. One duplex
 interface is required. Output goes to that interface's
-default output pair; separate clock domains and arbitrary output maps are deferred.
+selected output pair. Mono or stereo adjacent input pairs and independent two-channel
+listening/output pairs are selectable. Separate interface clock domains are deferred.
 
 ## Build and run on a Mac
 
@@ -44,7 +45,7 @@ will refuse schema 2. Never delete or reset the project to resolve a loading err
 Start with **the Fender bridge pickup only**. All positions do not need to be tested
 before this gate passes. Other guitars/positions/modes can get separate captures later.
 
-1. Build with the script above. It must finish all **12 XCTest tests**, release build
+1. Build with the script above. It must finish all **14 XCTest tests**, release build
    and signing. If any fail, stop and return the first error.
 2. On HOME, start your working SSL route at 44.1 kHz. In MY GUITAR, use the Fender
    **Fender SH template**, confirm Player II Modified Telecaster SH / bridge Player II Noiseless
@@ -78,6 +79,14 @@ provide a verified factory audio baseline. Source selection preserves calibratio
 Earlier successful captures were direct guitar-to-SSL; retain them as separate history.
 The new Kemper path needs its own measured capture. Legacy captures with no path field
 display UNSPECIFIED; loading never invents a path or loses volume/tone/gain notes.
+
+For stereo, stop audio and enable **Stereo input pair**, select the actual incoming
+pair, then select the separate **Speaker / listening output pair**. Numbering can
+include virtual/loopback channels; confirm the printed model/socket labels rather
+than guessing. Stereo capture retains interleaved L/R WAV samples. Spectral power
+averages channel energies instead of summing waveforms, so antiphase signals do not
+silently disappear; measured correlation is stored separately. These new routing
+controls remain live-unverified until the correct hardware connection is confirmed.
 
 ## First live test
 

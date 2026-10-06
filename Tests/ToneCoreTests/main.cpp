@@ -29,6 +29,17 @@ int main() {
         tr_meter_process(m,nullptr,100);
         check(tr_meter_frames(m)==44103, "missing buffers leave counters unchanged");
         tr_meter_destroy(m);
+        m=tr_meter_create(); float left[]={0.5f,-0.5f}, right[]={-0.5f,0.5f};
+        tr_meter_process_pair(m,left,right,2);
+        check(tr_meter_peak(m)==0.5f && tr_meter_rms(m)==0.5f && tr_meter_frames(m)==2,
+              "stereo meter measures energy without phase cancellation");
+        tr_meter_destroy(m);
+        auto *stereo=tr_queue_create(3); float paired[3]={};
+        check(tr_queue_push_pair(stereo,left,right,2)==1 && tr_queue_dropped(stereo)==2,
+              "stereo overflow drops complete frames");
+        check(tr_queue_pop(stereo,paired,3)==2 && paired[0]==0.5f && paired[1]==-0.5f,
+              "stereo queue preserves left/right order");
+        tr_queue_destroy(stereo);
         TRFingerprint fingerprint{};
         check(tr_fingerprint(sine.data(), uint32_t(sine.size()), 44100, &fingerprint) == 1 &&
               fingerprint.frames == sine.size() && fingerprint.windows > 0 &&

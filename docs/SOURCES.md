@@ -36,3 +36,12 @@ Product specification: user-supplied `Tone_Replicator_GREENFIELD_BUILD_PLAN_CODE
 dated 6 October 2026. The explicit request is to build. Its milestone plan is used as
 the product specification; external files do not authorize unrelated GitHub creation,
 publication, credential requests or messaging.
+
+User supplied SSL guide URL:
+https://support.solidstatelogic.com/hc/en-gb/articles/20859917333789-SSL-2-MKII-User-Guide
+
+Cloud request returned proxy tunnel **403 Forbidden**; page not read or audited.
+The linked slug names SSL 2 MKII; user previously identified SSL 2+ MKII but now
+reports physical sockets labelled INPUT 3/4. Confirm actual model/labels from a photo
+or uploaded guide before declaring physical channel roles. Proposed network addition:
+`support.solidstatelogic.com`; preserve package-manager presets and other custom rules.

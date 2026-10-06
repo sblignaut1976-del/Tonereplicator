@@ -44,6 +44,12 @@ final class AudioSession: ObservableObject {
 
     var captureBusy: Bool { captureStage == .recording || captureStage == .analyzing }
     var selectedGuitar: GuitarConfiguration? { project.gear.first { $0.id == project.selectedGuitarID } }
+    func setStereoInput(_ enabled: Bool) {
+        guard !running, !starting else { return }
+        var next = route; next.stereo = enabled
+        if enabled { next.inputChannel = (next.inputChannel / 2) * 2 }
+        route = next
+    }
 
     private func commit(_ candidate: Project) throws {
         guard !projectLoadFailed, let store else { throw AudioFailure.message("Saved project is unavailable. The original was preserved.") }
@@ -96,7 +102,7 @@ final class AudioSession: ObservableObject {
             return
         }
         drainSamples() // Discard pre-recording backlog on the consumer thread.
-        captureSamples = []; captureSamples.reserveCapacity(441_000)
+        captureSamples = []; captureSamples.reserveCapacity(441_000 * (route.stereo ? 2 : 1))
         captureGuitarID = config.id; captureRoute = route; recordedContext = captureContext
         captureDropBaseline = tr_queue_dropped(queue); captureToken = UUID()
         captureProgress = 0; captureStage = .recording; error = nil
@@ -124,10 +130,11 @@ final class AudioSession: ObservableObject {
         guard let queue else { return }
         let count = scratch.withUnsafeMutableBufferPointer { tr_queue_pop(queue, $0.baseAddress, UInt32($0.count)) }
         guard captureStage == .recording else { return }
-        let remaining = 441_000 - captureSamples.count
+        let total = 441_000 * (captureRoute.stereo ? 2 : 1)
+        let remaining = total - captureSamples.count
         captureSamples.append(contentsOf: scratch.prefix(min(Int(count), remaining)))
-        captureProgress = Double(captureSamples.count) / 441_000
-        if captureSamples.count == 441_000 { analyzeCapture(lostFrames: tr_queue_dropped(queue) != captureDropBaseline) }
+        captureProgress = Double(captureSamples.count) / Double(total)
+        if captureSamples.count == total { analyzeCapture(lostFrames: tr_queue_dropped(queue) != captureDropBaseline) }
     }
     private func analyzeCapture(lostFrames: Bool) {
         guard let guitarID = captureGuitarID else { discardCapture(); return }
@@ -218,6 +225,12 @@ final class AudioSession: ObservableObject {
             guard tr_route_valid(route.inputChannel, input.inputs) != 0, output.outputs > 0 else {
                 throw AudioFailure.message("Select an available guitar input and an interface with output channels.")
             }
+            guard !route.stereo || route.inputChannel + 1 < input.inputs else {
+                throw AudioFailure.message("Choose a complete stereo input pair.")
+            }
+            guard route.outputChannel < output.outputs, route.outputChannel + 1 < output.outputs else {
+                throw AudioFailure.message("Choose an available two-channel listening/output pair.")
+            }
             guard tr_rate_supported(try Devices.rate(input.id)) != 0 else {
                 throw AudioFailure.message("Set this interface to 44,100 Hz in Audio MIDI Setup, then try again. The app does not change your hardware rate silently.")
             }
@@ -238,31 +251,44 @@ final class AudioSession: ObservableObject {
             let format = inputNode.outputFormat(forBus: 0)
             guard tr_rate_supported(format.sampleRate) != 0,
                   tr_rate_supported(outputNode.inputFormat(forBus: 0).sampleRate) != 0,
-                  route.inputChannel < format.channelCount,
                   format.commonFormat == .pcmFormatFloat32, !format.isInterleaved else {
                 throw AudioFailure.message("The audio graph must expose noninterleaved Float32 input and 44.1 kHz input/output. Check Audio MIDI Setup.")
             }
-            guard let mono = AVAudioFormat(standardFormatWithSampleRate: 44_100, channels: 1) else {
+            let stereoInput = route.stereo
+            guard let captureFormat = AVAudioFormat(standardFormatWithSampleRate: 44_100, channels: stereoInput ? 2 : 1),
+                  let playbackFormat = AVAudioFormat(standardFormatWithSampleRate: 44_100, channels: 2) else {
                 throw AudioFailure.message("Could not create the canonical audio format.")
             }
-            engine.connect(inputNode, to: engine.mainMixerNode, format: mono)
-            // Set the map after negotiating the one-channel application format.
-            // Route only the selected guitar channel, not all microphone/line inputs.
-            var map = [Int32(route.inputChannel)]
+            engine.connect(inputNode, to: engine.mainMixerNode, format: captureFormat)
+            engine.connect(engine.mainMixerNode, to: outputNode, format: playbackFormat)
+            // Explicit channel maps: input pair and speaker output pair are independent.
+            var map = stereoInput ? [Int32(route.inputChannel), Int32(route.inputChannel + 1)] : [Int32(route.inputChannel)]
             try map.withUnsafeMutableBytes { raw in
                 try Devices.checked(AudioUnitSetProperty(inputUnit, kAudioOutputUnitProperty_ChannelMap,
                     kAudioUnitScope_Output, 1, raw.baseAddress!, UInt32(raw.count)), "Select guitar channel")
             }
+            var outputMap = [Int32](repeating: -1, count: Int(output.outputs))
+            outputMap[Int(route.outputChannel)] = 0; outputMap[Int(route.outputChannel + 1)] = 1
+            try outputMap.withUnsafeMutableBytes { raw in
+                try Devices.checked(AudioUnitSetProperty(outputUnit, kAudioOutputUnitProperty_ChannelMap,
+                    kAudioUnitScope_Input, 0, raw.baseAddress!, UInt32(raw.count)), "Select listening output pair")
+            }
             engine.mainMixerNode.outputVolume = 0
-            inputNode.installTap(onBus: 0, bufferSize: 256, format: mono) { buffer, _ in
+            inputNode.installTap(onBus: 0, bufferSize: 256, format: captureFormat) { buffer, _ in
                 guard let data = buffer.floatChannelData else { return }
-                tr_meter_process(meter, data[0], buffer.frameLength)
-                tr_queue_push(queue, data[0], buffer.frameLength)
+                if stereoInput {
+                    tr_meter_process_pair(meter, data[0], data[1], buffer.frameLength)
+                    tr_queue_push_pair(queue, data[0], data[1], buffer.frameLength)
+                } else {
+                    tr_meter_process(meter, data[0], buffer.frameLength)
+                    tr_queue_push(queue, data[0], buffer.frameLength)
+                }
             }
             tapInstalled = true
             engine.prepare(); try engine.start()
             running = true; monitoring = false
-            status = "Live input • 44.1 kHz • \(input.name) • Input \(route.inputChannel + 1)"
+            let inputLabel = stereoInput ? "Inputs \(route.inputChannel + 1)/\(route.inputChannel + 2)" : "Input \(route.inputChannel + 1)"
+            status = "Live • 44.1 kHz • \(input.name) • \(inputLabel) → Outputs \(route.outputChannel + 1)/\(route.outputChannel + 2)"
             timer = Timer.publish(every: 0.1, on: .main, in: .common).autoconnect().sink { [weak self] _ in
                 guard let self, let meter = self.meter else { return }
                 self.peak = tr_meter_peak(meter); self.rms = tr_meter_rms(meter)

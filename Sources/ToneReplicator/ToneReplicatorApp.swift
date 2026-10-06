@@ -56,10 +56,26 @@ struct FoundationView: View {
                                 Text(device.name).tag(device.uid)
                             }
                         }.disabled(audio.running || audio.starting)
-                        Picker("Guitar input", selection: Binding(get: { audio.route.inputChannel }, set: { audio.route.inputChannel = $0 })) {
-                            let count = audio.devices.first { $0.uid == audio.project.selectedInterfaceUID }?.inputs ?? 0
-                            ForEach(0..<count, id: \.self) { channel in Text("Input \(channel + 1)").tag(channel) }
+                        Toggle("Stereo input pair", isOn: Binding(get: { audio.route.stereo }, set: { audio.setStereoInput($0) }))
+                            .disabled(audio.running || audio.starting)
+                        Picker("Incoming guitar / Kemper input", selection: Binding(get: { audio.route.inputChannel }, set: { audio.route.inputChannel = $0 })) {
+                            let count = Int(audio.devices.first { $0.uid == audio.project.selectedInterfaceUID }?.inputs ?? 0)
+                            if audio.route.stereo {
+                                ForEach(Array(stride(from: 0, to: max(0, count - 1), by: 2)), id: \.self) { channel in
+                                    Text("Inputs \(channel + 1) & \(channel + 2)").tag(UInt32(channel))
+                                }
+                            } else {
+                                ForEach(0..<count, id: \.self) { channel in Text("Input \(channel + 1)").tag(UInt32(channel)) }
+                            }
                         }.disabled(audio.running || audio.starting)
+                        Picker("Speaker / listening output pair", selection: Binding(get: { audio.route.outputChannel }, set: { audio.route.outputChannel = $0 })) {
+                            let count = Int(audio.devices.first { $0.uid == audio.route.outputUID }?.outputs ?? 0)
+                            ForEach(Array(stride(from: 0, to: max(0, count - 1), by: 2)), id: \.self) { channel in
+                                Text("Outputs \(channel + 1) & \(channel + 2)").tag(UInt32(channel))
+                            }
+                        }.disabled(audio.running || audio.starting)
+                        Text("Input channels carry audio into the app. Output channels feed speakers/headphones. Some interfaces expose virtual or loopback inputs; match the physical incoming sockets.")
+                            .font(.caption).foregroundStyle(.secondary)
                         Picker("Output interface", selection: Binding(get: { audio.route.outputUID }, set: { audio.route.outputUID = $0 })) {
                             Text("Choose an interface").tag("")
                             ForEach(audio.devices.filter { $0.outputs > 0 }) { device in Text(device.name).tag(device.uid) }

@@ -324,6 +324,39 @@ app restart and retained-history visibility remain pending.
 - Kevin's exact Mac/macOS, interface and real signal-path results remain **UNKNOWN**.
 - No universal interface or second-installation hardware compatibility claim added.
 
+## 6 October 2026 — Kemper path has no app input yet
+
+- User reports guitar connected to Kemper, app SSL **Input 3** selected, no audio
+  visible in app. Physical Monitor Output → SSL connection/socket not yet confirmed.
+- New Kemper routing result: **FAIL / UNRESOLVED**, not a diagnosed software defect.
+- SSL 2+ MKII has two physical analog input channels; a third enumerated channel may
+  be virtual/loopback. Confirm exact rear input socket and select the corresponding
+  app Input 1/2, with rear LINE mode and the matching front instrument socket empty.
+- Confirm signal on SSL hardware meter before expecting app meter response; if there
+  is no hardware signal, investigate Kemper Monitor source/level, cable and bypass rig.
+- Existing direct-input calibration remains retained. Kemper capture and dependent
+  target/matching work remain paused until the route is working.
+
+## 6 October 2026 — Stereo route correction candidate / app 0.2.2
+
+- User clarifies stereo setup with speakers attached through SSL; initially selects
+  app Input 3, then reports rear sockets numbered 3/4 and labelled inputs. Exact
+  model/socket roles remain **UNCONFIRMED** pending photo/manual evidence; earlier
+  hardware names are user-reported, not independently identified from a device photo.
+- Linked SSL guide could not be read: proxy tunnel **403 Forbidden**. No claim of
+  manufacturer verification is made. Need allowlisted SSL support access or uploaded
+  source/photo. Physical incoming-vs-listening ports must be resolved first.
+- Candidate adds explicit mono/stereo input pairs, separate listening output pairs,
+  stereo tap/queue/meter, retained two-channel WAVs and energy-average spectral/level
+  analysis with correlation, preserving legacy routing/calibration data.
+- Portable checks: **PASS**, 19 executed, including stereo phase-independent meter,
+  complete-frame overflow and channel ordering. Sanitizers: **PASS**, same 19 checks.
+- Mac Swift suite: **14 tests defined, UNRUN for this candidate**. Added legacy route
+  defaults/pair persistence and opposite-phase stereo capture/WAV preservation.
+- Mac compilation, output-pair AudioUnit mapping and real stereo Kemper path: **PENDING**.
+- Current hardware route has no app signal; remains **UNRESOLVED**, no new capture
+  or target/matching milestone accepted. Prior direct-input results remain scoped.
+
 ## Live result template
 
 - Date, build version/commit:

@@ -55,6 +55,7 @@ struct GuitarView: View {
                                 Text("Retained calibrations: \(config.calibrations.count)")
                                 if let saved = config.baseTone {
                                     Text("Capture ID: \(saved.id.uuidString)").textSelection(.enabled)
+                                    Text("Capture channels: \(saved.channelCount == 2 ? "Stereo pair" : "Mono")")
                                     Text("Guitar volume: \(saved.context.guitarVolume.isEmpty ? "UNKNOWN" : saved.context.guitarVolume)")
                                     Text("Guitar tone: \(saved.context.guitarTone.isEmpty ? "UNKNOWN" : saved.context.guitarTone)")
                                     Text("Interface gain note: \(saved.context.interfaceGainNote.isEmpty ? "UNKNOWN" : saved.context.interfaceGainNote)")
@@ -166,6 +167,9 @@ struct GuitarView: View {
             DisclosureGroup("Measured details") {
                 Text(String(format: "Peak %.1f dBFS · RMS %.1f dBFS", 20 * log10(max(fingerprint.peak, 0.000001)), 20 * log10(max(fingerprint.rms, 0.000001))))
                 Text("24 spectral power bands · \(fingerprint.algorithm)")
+                if let correlation = fingerprint.stereoCorrelation {
+                    Text(String(format: "Measured stereo correlation: %.3f", correlation))
+                }
                 Text("This is your captured guitar behavior, not a pickup specification or a tone-match score.")
             }.font(.caption).foregroundStyle(.secondary)
         }
