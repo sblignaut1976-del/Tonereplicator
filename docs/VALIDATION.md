@@ -368,6 +368,20 @@ app restart and retained-history visibility remain pending.
 - Stereo candidate should use Inputs 1/2 after Mac build/test; output pair must match
   the actual speaker/headphone connection. No corrected-route result reported yet.
 
+## 6 October 2026 — Kemper mono input receives signal
+
+- SSL manufacturer guide successfully retrieved after user approved network access:
+  https://support.solidstatelogic.com/hc/en-gb/articles/20859917333789-SSL-2-MKII-User-Guide
+  Guide confirms rear jack line inputs 1/2, front INST override and hardware input
+  LED metering. This verifies documentation, not independent physical identification.
+- User reports LINE was off; enabling it restores signal. User explicitly confirms
+  the app's red meter moves with Input 1 selected on the current installed app.
+- LIVE AUDIO: **PASS for incoming mono Kemper → SSL → app signal**. Prior no-signal
+  result resolved by SSL LINE selection; no software defect established.
+- Stereo Input 1/2 candidate, independent listening output map, clipping check and
+  new Kemper calibration remain **PENDING**. Installed build version not reconfirmed.
+- Earlier direct-SSL Base Tone remains retained and is not relabelled as Kemper audio.
+
 ## Live result template
 
 - Date, build version/commit:
