@@ -433,6 +433,15 @@ app restart and retained-history visibility remain pending.
 - Linux portable checks: **PASS, 19 executed**. Diff whitespace check: **PASS**.
 - Mac build, picker use and restart retention remain **PENDING**.
 
+## 6 October 2026 — Saved calibration picker live pass
+
+- User confirms app opens, then replies "ys" to the check of selecting another
+  saved calibration and quitting/reopening to verify the selection remains active.
+- LIVE APP: **PASS, user-reported saved calibration selection and restart retention**.
+- No full 0.2.3 build log supplied: the new 15-test Mac suite result remains **UNCONFIRMED**.
+- Five distinct physical captures, Kevin's installation and independent stereo
+  left/right isolation remain untested; this result does not establish those checks.
+
 ## Live result template
 
 - Date, build version/commit:
