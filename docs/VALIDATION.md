@@ -3,7 +3,8 @@
 Dates use the user's Africa/Johannesburg timezone. No synthetic test is a hardware test.
 
 Latest status: **Mac build and 2 project tests PASS** on the user's Mac mini with
-Xcode 27.0. App launch, permissions and real input/output remain pending; M1 is not complete.
+Xcode 27.0. User reports app launch and moving live input meter without errors through
+an SSL 2+ MKII. Output, latency and the remaining live checks are pending; M1 is not complete.
 
 ## 6 October 2026 — M1 foundation candidate / app 0.1.0
 
@@ -108,6 +109,27 @@ Xcode 27.0. App launch, permissions and real input/output remain pending; M1 is 
   app restart, disconnection handling and latency: **PENDING**.
 - Kemper hardware/Rig Manager compatibility: **UNRUN**.
 - M1: **NOT COMPLETE** until the live gate passes or is explicitly deferred.
+
+## 6 October 2026 — First real input result
+
+- User confirmed the app window opened.
+- Interface: **SSL 2+ MKII**, identified through user replies; exact driver and macOS
+  version not yet supplied.
+- Instructed route: guitar into front-panel Input 1 instrument socket, app input/output
+  SSL 2+ MKII, selected guitar Input 1; monitoring left off.
+- Actual user report: **"its moving no errors"** in response to the live-meter check.
+- App launch: **PASS — USER REPORTED**.
+- Live input meter response: **PASS — USER REPORTED**, real guitar/interface test.
+- No screenshot, frame counters or independently confirmed sample-rate display yet.
+  The app enforces 44.1 kHz at startup; this report supports successful operation under
+  that check, but does not establish an independently measured sample rate or latency.
+- Headphone output through app, selected-channel isolation, routing persistence after
+  app restart, 48 kHz rejection and disconnect/reconnect: **PENDING**.
+- Kemper input/output and Rig Manager compatibility: **UNRUN**. No Kemper audio
+  path or matching feature is validated by this interface-input result.
+- Next live step: headphones at low volume; disable hardware direct monitoring, enable
+  `Listen through the app`, play and report audible output and perceived delay/noise.
+- M1 remains **NOT COMPLETE** pending the remaining live checks or explicit deferral.
 
 ## Live result template
 
