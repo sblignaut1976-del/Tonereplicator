@@ -146,6 +146,20 @@ checks are pending; M1 is not complete.
 - M1 remains **NOT COMPLETE**; actual restart persistence, rate rejection, channel
   isolation and reconnection tests are pending. Kemper hardware remains **UNRUN**.
 
+## 6 October 2026 — Actual app-restart persistence
+
+- User quit the app and closed Terminal. Initial relative app-opening command from
+  the new Terminal failed because it started in the home directory.
+- Supplied corrected commands: change to the extracted Downloads checkout, then
+  `open "build/Tone Replicator.app"`.
+- Asked user to confirm SSL interface / Input 1 selection persisted and
+  `Listen through the app` was off after reopening. Actual reply: **"yes"**.
+- App reopen and routing persistence: **PASS — USER REPORTED**.
+- Monitoring off after restart: **PASS — USER REPORTED**.
+- Audio restart after reopen and perceived latency remain to be explicitly checked;
+  48 kHz rejection, channel isolation and reconnection checks are still pending.
+- M1 remains **NOT COMPLETE**; no dependent calibration/matching work advanced.
+
 ## Live result template
 
 - Date, build version/commit:
