@@ -31,6 +31,16 @@ struct GuitarView: View {
                         Picker("Base Tone source", selection: Binding(get: { config.activeSource }, set: { audio.selectSource($0) })) {
                             ForEach(BaseToneSource.allCases, id: \.self) { Text($0.rawValue).tag($0) }
                         }.pickerStyle(.segmented).disabled(audio.captureBusy || audio.calibrationDraft != nil)
+                        if !config.calibrations.isEmpty {
+                            Picker("Saved calibration", selection: Binding(get: { config.activeCalibrationID }, set: { audio.selectCalibration($0) })) {
+                                ForEach(Array(config.calibrations.enumerated()), id: \.element.id) { index, saved in
+                                    Text("\(index + 1) · \(saved.createdAt.formatted(date: .abbreviated, time: .standard)) · \(saved.context.path.rawValue) · \(saved.channelCount == 2 ? "Stereo" : "Mono")")
+                                        .tag(Optional(saved.id))
+                                }
+                            }.disabled(audio.captureBusy || audio.calibrationDraft != nil)
+                            Text("Choose any saved calibration to make it active. Earlier recordings remain available, including five or more for this configuration.")
+                                .font(.caption).foregroundStyle(.secondary)
+                        }
                         if config.activeSource == .factory {
                             Text("UNKNOWN — no verified factory audio baseline is available for this exact configuration.")
                                 .foregroundStyle(.yellow)

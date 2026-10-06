@@ -95,6 +95,12 @@ struct GuitarConfiguration: Codable, Equatable, Identifiable {
     var calibrations: [SavedCalibration] = []
     var baseTone: SavedCalibration? { calibrations.first { $0.id == activeCalibrationID } }
 
+    mutating func selectCalibration(_ id: UUID) throws {
+        guard calibrations.contains(where: { $0.id == id }) else { throw GearError.missingCalibration }
+        activeCalibrationID = id
+        activeSource = .calibration
+    }
+
     mutating func save(_ calibration: SavedCalibration, replacing: Bool) throws {
         if activeCalibrationID != nil && !replacing { throw GearError.replacementRequired }
         guard !calibrations.contains(where: { $0.id == calibration.id }) else { throw GearError.duplicateCapture }
@@ -105,12 +111,13 @@ struct GuitarConfiguration: Codable, Equatable, Identifiable {
 }
 
 enum GearError: LocalizedError {
-    case replacementRequired, duplicateCapture, missingConfiguration, incompleteIdentity
+    case replacementRequired, duplicateCapture, missingConfiguration, missingCalibration, incompleteIdentity
     var errorDescription: String? {
         switch self {
         case .replacementRequired: return "A Base Tone is already saved. Choose Replace Base Tone explicitly."
         case .duplicateCapture: return "This capture is already saved."
         case .missingConfiguration: return "Select a saved guitar/pickup configuration."
+        case .missingCalibration: return "Choose a calibration saved for this guitar/pickup configuration."
         case .incompleteIdentity: return "Enter manufacturer, model and pickup position."
         }
     }

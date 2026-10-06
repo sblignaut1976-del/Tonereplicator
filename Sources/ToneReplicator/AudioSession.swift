@@ -92,6 +92,16 @@ final class AudioSession: ObservableObject {
             var next = project; next.gear[index].activeSource = source; try commit(next)
         } catch { self.error = error.localizedDescription }
     }
+    func selectCalibration(_ id: UUID?) {
+        guard let id, !captureBusy, calibrationDraft == nil else { return }
+        do {
+            guard let index = project.gear.firstIndex(where: { $0.id == project.selectedGuitarID }) else { throw GearError.missingConfiguration }
+            var next = project
+            try next.gear[index].selectCalibration(id)
+            try commit(next)
+            error = nil
+        } catch { self.error = error.localizedDescription }
+    }
     func recordCalibration() {
         guard running, !captureBusy, calibrationDraft == nil, let config = selectedGuitar, let queue else {
             error = "Start audio and select a saved guitar configuration before recording."

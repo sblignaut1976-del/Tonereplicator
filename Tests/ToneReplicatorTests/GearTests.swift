@@ -22,6 +22,32 @@ final class GearTests: XCTestCase {
         XCTAssertEqual(config.calibrations, [first, second])
         XCTAssertThrowsError(try config.save(second, replacing: true))
     }
+    func testFiveSavedCalibrationsCanBeSelectedAndPersisted() throws {
+        var config = GuitarConfiguration(id: UUID(), identity: GuitarIdentity.fenderTemplate())
+        let records = (0..<5).map { _ in record() }
+        for (index, saved) in records.enumerated() {
+            try config.save(saved, replacing: index > 0)
+        }
+        for saved in records {
+            config.activeSource = .factory
+            try config.selectCalibration(saved.id)
+            XCTAssertEqual(config.baseTone, saved)
+            XCTAssertEqual(config.activeSource, .calibration)
+            XCTAssertEqual(config.calibrations, records)
+        }
+        try config.selectCalibration(records[1].id)
+        let dir = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        defer { try? FileManager.default.removeItem(at: dir) }
+        let store = ProjectStore(url: dir.appendingPathComponent("project.json"))
+        var project = Project(); project.gear = [config]; project.selectedGuitarID = config.id
+        try store.save(project)
+        let loaded = try store.load()
+        XCTAssertEqual(loaded.gear[0].baseTone, records[1])
+        XCTAssertEqual(loaded.gear[0].calibrations, records)
+        let previous = config
+        XCTAssertThrowsError(try config.selectCalibration(UUID()))
+        XCTAssertEqual(config, previous)
+    }
     func testPickupConfigurationsAndSourceChoicePersistSeparately() throws {
         let dir = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
         defer { try? FileManager.default.removeItem(at: dir) }

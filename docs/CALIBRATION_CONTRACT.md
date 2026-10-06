@@ -44,3 +44,11 @@ input, migration/backup, separate pickup persistence, no implicit replacement,
 explicit replacement preserving history, active source changes without destructive
 capture mutation. Live gate: record actual guitar, save/restart, confirm exact pickup
 and Base Tone remain selected and a second recording does not silently replace them.
+# Saved calibration selection
+
+Each guitar/pickup configuration retains its calibration recordings. MY GUITAR's
+Saved calibration picker lists all of them, including five or more, by capture time,
+signal path and channel count. Selecting one explicitly makes it the active measured
+Base Tone and persists that selection locally. Switching never modifies WAVs or
+fingerprints. Captures belonging to another configuration cannot be selected here.
+Finish saving or discarding an unsaved candidate before switching saved captures.

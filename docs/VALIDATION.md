@@ -417,6 +417,22 @@ app restart and retained-history visibility remain pending.
   stereo WAV inspected yet. Do not infer those results from a combined live meter.
 - New bypassed Kemper calibration remains **PENDING**; direct SSL capture retained.
 
+## 6 October 2026 — Kemper recording check and saved calibration selection
+
+- User says "that test passed" after instructions to record a ten-second bypassed
+  Kemper candidate: **PASS, user-reported recording check**. Saving/activating it and
+  persistence after restart are not yet confirmed.
+- User requests selection among five stored calibrations. App 0.2.3 adds a Saved
+  calibration picker for every retained capture in the selected guitar/pickup
+  configuration, labelled by number, timestamp, signal path and mono/stereo.
+- Explicit selection activates My Calibration, persists the active capture ID and
+  preserves all recordings. No five-slot cap, deletion or schema change introduced.
+  Selector is disabled while recording/analyzing or reviewing an unsaved candidate.
+- Added XCTest covering selection of all five records, local-store reload, retained
+  history and rejection of an unrelated ID. **15 Mac tests defined, UNRUN for 0.2.3**.
+- Linux portable checks: **PASS, 19 executed**. Diff whitespace check: **PASS**.
+- Mac build, picker use and restart retention remain **PENDING**.
+
 ## Live result template
 
 - Date, build version/commit:
