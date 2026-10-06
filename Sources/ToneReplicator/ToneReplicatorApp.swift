@@ -16,7 +16,6 @@ struct ToneReplicatorApp: App {
 
 struct FoundationView: View {
     @ObservedObject var audio: AudioSession
-    @State private var advanced = false
     private let blue = Color(red: 0.25, green: 0.55, blue: 1)
     var body: some View {
         HStack(spacing: 0) {
@@ -85,7 +84,7 @@ struct FoundationView: View {
                             .disabled(!audio.running)
                         Text("Use headphones and start with low output volume. Turn off the interface’s direct monitoring when comparing app monitoring.")
                             .font(.caption).foregroundStyle(.secondary)
-                        DisclosureGroup("Diagnostics", isExpanded: $advanced) {
+                        DisclosureGroup("Diagnostics") {
                             VStack(alignment: .leading) {
                                 Text("Received frames: \(audio.frames)")
                                 Text("Invalid samples: \(audio.invalid)")

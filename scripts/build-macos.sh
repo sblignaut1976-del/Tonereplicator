@@ -5,9 +5,11 @@ if [[ "$(uname -s)" != Darwin ]]; then
     echo "The native app requires a Mac with Xcode 16+ / Swift 6 and macOS 14+. Use make test for the portable core." >&2
     exit 1
 fi
-swift test
-swift build -c release
-bin_dir="$(swift build -c release --show-bin-path)"
+# Temporary compatibility workaround: XCBuild failed to initialize on the user's Mac.
+# Native is deprecated in newer SwiftPM; revalidate the default system before removal.
+swift test --build-system native
+swift build --build-system native -c release
+bin_dir="$(swift build --build-system native -c release --show-bin-path)"
 app="build/Tone Replicator.app"
 mkdir -p "$app/Contents/MacOS" "$app/Contents/Resources"
 cp "$bin_dir/ToneReplicator" "$app/Contents/MacOS/ToneReplicator"

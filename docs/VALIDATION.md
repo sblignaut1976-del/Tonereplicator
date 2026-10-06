@@ -29,6 +29,34 @@ Dates use the user's Africa/Johannesburg timezone. No synthetic test is a hardwa
   still require source review and real-device validation.
 - Live input/output and Rig Manager compatibility remain **UNRUN**.
 
+## 6 October 2026 — First user Mac build attempt
+
+- Source: downloaded `codex/m1-foundation`, commit `1ef4a571d3ec867f2bd2150f1baabf4cca089e43`.
+- Host: user's Mac mini; macOS, processor and Xcode/Swift versions not yet supplied.
+- Command: `bash scripts/build-macos.sh` from the extracted source folder.
+- Actual result: **FAIL**, `swift test` could not initialize the XCBuild build system:
+  `SessionFailedError` / `Unknown error parsing property list`.
+- This is a build-system initialization failure; no app compilation or live audio
+  validation is established by this attempt. The cause is not yet confirmed.
+- Next diagnostic: run `swift test --build-system native` to determine whether
+  the alternative SwiftPM build system can initialize and compile this package.
+- M1 remains blocked at the native build/live-test gate.
+
+## 6 October 2026 — Native build-system retry
+
+- User command: `swift test --build-system native`.
+- Build initialization: **PASS**, compilation began with the native backend.
+- App compilation: **FAIL**, SwiftUI `@State` could not load `SwiftUIMacros.StateMacro`;
+  its generated `$advanced` binding consequently did not exist.
+- Nonfatal warnings: fixed-rate Codable property and CFString pointer bridging.
+- Fix candidate: use the self-managed `DisclosureGroup("Diagnostics")` overload,
+  removing the unnecessary explicit `@State` property/binding. Use native backend
+  consistently for test, release build and binary-path lookup in the script.
+- Native backend emits a deprecation warning in the user's toolchain. The default
+  XCBuild initialization issue remains unresolved; the workaround is temporary.
+- Shell syntax of changed script: checked in cloud; native compilation/retest pending
+  user execution. Do not infer compilation, tests or live hardware pass.
+
 ## Live result template
 
 - Date, build version/commit:
