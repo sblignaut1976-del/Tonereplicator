@@ -407,6 +407,16 @@ app restart and retained-history visibility remain pending.
 - Real app launch, stereo AudioUnit input/output maps and Kemper calibration:
   **PENDING user live results**. Build success does not establish stereo routing.
 
+## 6 October 2026 — Stereo input selection live confirmation
+
+- After successful Mac build, user initially could not locate the stereo input
+  checkbox and reported working Input 1 with a stereo listening output selector.
+- Guided user to HOME → Stereo input pair → Inputs 1 & 2. User replies
+  "yes its working" to that check: **PASS, user-reported stereo route operation**.
+- No independent left/right isolation test, listening output-pair test or captured
+  stereo WAV inspected yet. Do not infer those results from a combined live meter.
+- New bypassed Kemper calibration remains **PENDING**; direct SSL capture retained.
+
 ## Live result template
 
 - Date, build version/commit:
