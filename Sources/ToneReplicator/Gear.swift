@@ -6,17 +6,26 @@ enum BaseToneSource: String, Codable, CaseIterable {
 }
 
 struct GuitarIdentity: Codable, Equatable {
-    var manufacturer = "Fender"
-    var family = "Telecaster"
-    var model = "Player II Modified Telecaster SH"
+    var manufacturer = ""
+    var family = ""
+    var model = ""
     var variant = ""
     var year = ""
-    var pickupModel = "Player II Noiseless Tele"
-    var pickupPosition = "Bridge"
-    var switchingMode = "Factory wiring"
-    var sourceURL = "https://www.fender.com/products/player-ii-modified-telecaster-sh"
-    // User supplied this link/identification; fetching/verifying it is a separate step.
-    var identificationStatus = "USER VERIFIED — SOURCES SUPPLIED"
+    var pickupModel = ""
+    var pickupPosition = ""
+    var switchingMode = ""
+    var sourceURL = ""
+    var identificationStatus = "USER PROVIDED"
+    static func fenderTemplate() -> GuitarIdentity {
+        var value = GuitarIdentity()
+        value.manufacturer = "Fender"; value.family = "Telecaster"
+        value.model = "Player II Modified Telecaster SH"
+        value.pickupModel = "Player II Noiseless Tele"; value.pickupPosition = "Bridge"
+        value.switchingMode = "Factory wiring"
+        value.sourceURL = "https://www.fender.com/products/player-ii-modified-telecaster-sh"
+        value.identificationStatus = "TEMPLATE — USER MUST CONFIRM"
+        return value
+    }
     var complete: Bool {
         [manufacturer, model, pickupPosition].allSatisfy { !$0.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty }
     }

@@ -69,7 +69,7 @@ final class AudioSession: ObservableObject {
         identity.manufacturer = "Ibanez"; identity.family = "AZ"; identity.model = "AZ224F"
         identity.pickupModel = "Seymour Duncan Hyperion"; identity.pickupPosition = ""
         identity.switchingMode = ""; identity.sourceURL = ""
-        identity.identificationStatus = "USER VERIFIED — SOURCES SUPPLIED"
+        identity.identificationStatus = "TEMPLATE — USER MUST CONFIRM"
         guitarDraft = identity
     }
     func selectGuitar(_ id: UUID?) {
@@ -213,7 +213,7 @@ final class AudioSession: ObservableObject {
                 throw AudioFailure.message("Selected interface is unavailable. Reconnect it and refresh.")
             }
             guard input.id == output.id else {
-                throw AudioFailure.message("M1 requires one duplex interface for input and output. Separate-device clock alignment is not validated yet.")
+                throw AudioFailure.message("Use one duplex interface for input and output. Separate-device clock alignment is not validated yet.")
             }
             guard tr_route_valid(route.inputChannel, input.inputs) != 0, output.outputs > 0 else {
                 throw AudioFailure.message("Select an available guitar input and an interface with output channels.")

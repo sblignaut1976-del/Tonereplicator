@@ -11,7 +11,7 @@ final class GearTests: XCTestCase {
             context: CaptureContext())
     }
     func testReplacementRequiresExplicitActionAndKeepsHistory() throws {
-        var config = GuitarConfiguration(id: UUID(), identity: GuitarIdentity())
+        var config = GuitarConfiguration(id: UUID(), identity: GuitarIdentity.fenderTemplate())
         let first = record(); let second = record()
         try config.save(first, replacing: false)
         XCTAssertThrowsError(try config.save(second, replacing: false))
@@ -26,9 +26,9 @@ final class GearTests: XCTestCase {
         let dir = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
         defer { try? FileManager.default.removeItem(at: dir) }
         let store = ProjectStore(url: dir.appendingPathComponent("project.json"))
-        var bridge = GuitarConfiguration(id: UUID(), identity: GuitarIdentity())
+        var bridge = GuitarConfiguration(id: UUID(), identity: GuitarIdentity.fenderTemplate())
         try bridge.save(record(), replacing: false)
-        var neckIdentity = GuitarIdentity(); neckIdentity.pickupPosition = "Neck"; neckIdentity.pickupModel = "Unknown"
+        var neckIdentity = GuitarIdentity.fenderTemplate(); neckIdentity.pickupPosition = "Neck"; neckIdentity.pickupModel = "Unknown"
         var neck = GuitarConfiguration(id: UUID(), identity: neckIdentity)
         try neck.save(record(), replacing: false)
         bridge.activeSource = .factory
@@ -121,5 +121,31 @@ final class GearTests: XCTestCase {
                 return XCTFail("Expected missing-path error, got \(error)")
             }
         }
+    }
+    func testFreshGearFormDoesNotInheritAnotherPersonsGuitar() {
+        let blank = GuitarIdentity()
+        XCTAssertEqual(blank.manufacturer, "")
+        XCTAssertEqual(blank.model, "")
+        XCTAssertEqual(blank.pickupModel, "")
+        XCTAssertFalse(blank.complete)
+        XCTAssertEqual(blank.identificationStatus, "USER PROVIDED")
+        XCTAssertTrue(GuitarIdentity.fenderTemplate().complete)
+        XCTAssertEqual(GuitarIdentity.fenderTemplate().identificationStatus, "TEMPLATE — USER MUST CONFIRM")
+    }
+    func testIndependentLocalStoresDoNotShareGuitarsOrCalibrations() throws {
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        defer { try? FileManager.default.removeItem(at: root) }
+        let first = ProjectStore(url: root.appendingPathComponent("personA/project.json"))
+        let second = ProjectStore(url: root.appendingPathComponent("personB/project.json"))
+        var firstProject = Project()
+        var config = GuitarConfiguration(id: UUID(), identity: GuitarIdentity.fenderTemplate())
+        try config.save(record(), replacing: false)
+        firstProject.gear = [config]; firstProject.selectedGuitarID = config.id
+        try first.save(firstProject)
+        XCTAssertTrue(try second.load().gear.isEmpty)
+        var secondProject = Project(); secondProject.name = "Independent project"
+        try second.save(secondProject)
+        XCTAssertEqual(try first.load(), firstProject)
+        XCTAssertEqual(try second.load(), secondProject)
     }
 }

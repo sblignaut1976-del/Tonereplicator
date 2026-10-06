@@ -76,7 +76,7 @@ struct GuitarView: View {
                         if audio.captureContext.path == .kemperBypass {
                             Text("For the intended clean Base Tone, bypass Kemper amp, cabinet and all effects. Connect its analog output to an interface LINE input. Record the output source/level and any remaining input/output processing below.")
                                 .font(.caption).foregroundStyle(.yellow)
-                            Text("The front SSL instrument-input check does not verify this line-level Kemper route.")
+                            Text("An earlier direct-guitar capture does not verify this line-level Kemper route.")
                                 .font(.caption).foregroundStyle(.secondary)
                         }
                         TextField("Device note (e.g. Kemper PROFILER Stage)", text: $audio.captureContext.deviceNote)
@@ -139,8 +139,8 @@ struct GuitarView: View {
         VStack(alignment: .leading, spacing: 14) {
             Text("Add exact guitar / pickup configuration").font(.headline)
             HStack {
-                Button("Use my Fender details") { audio.guitarDraft = GuitarIdentity() }
-                Button("Use my Ibanez details") { audio.suggestIbanez() }
+                Button("Fender SH template") { audio.guitarDraft = GuitarIdentity.fenderTemplate() }
+                Button("Ibanez AZ224F template") { audio.suggestIbanez() }
             }
             TextField("Manufacturer", text: $audio.guitarDraft.manufacturer)
             TextField("Family (optional)", text: $audio.guitarDraft.family)

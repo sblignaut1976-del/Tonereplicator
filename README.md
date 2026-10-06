@@ -44,10 +44,10 @@ will refuse schema 2. Never delete or reset the project to resolve a loading err
 Start with **the Fender bridge pickup only**. All positions do not need to be tested
 before this gate passes. Other guitars/positions/modes can get separate captures later.
 
-1. Build with the script above. It must finish all **10 XCTest tests**, release build
+1. Build with the script above. It must finish all **12 XCTest tests**, release build
    and signing. If any fail, stop and return the first error.
 2. On HOME, start your working SSL route at 44.1 kHz. In MY GUITAR, use the Fender
-   suggestion, confirm Player II Modified Telecaster SH / bridge Player II Noiseless
+   **Fender SH template**, confirm Player II Modified Telecaster SH / bridge Player II Noiseless
    Tele and correct any details before saving the configuration. These identities
    carry the user's source/verification attribution, not an independent source audit.
 3. Choose the actual **Calibration signal path** before recording. The intended user
@@ -65,7 +65,7 @@ before this gate passes. Other guitars/positions/modes can get separate captures
    Cancel the Replace confirmation and discard the candidate: the original must remain.
 7. A deliberate Replace confirmation may activate a new capture ID; the previous
    calibration stays in retained history. A separate guitar/pickup configuration must
-   have its own Base Tone. Use the Ibanez suggestion and explicitly enter its position
+   have its own Base Tone. Use the Ibanez AZ224F template and explicitly enter its position
    and switching/Alter mode, which have not been supplied.
 
 Record actual outcomes in [the validation log](docs/VALIDATION.md). No calibration

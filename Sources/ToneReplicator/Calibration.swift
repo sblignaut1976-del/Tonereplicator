@@ -13,7 +13,7 @@ enum CalibrationError: LocalizedError {
         switch self {
         case .lostFrames: return "Some audio frames were lost. Close busy applications and record again."
         case .invalidSamples: return "The input contains invalid samples. Check the interface and record again."
-        case .clipped: return "The capture clipped. Lower the SSL input gain and record again."
+        case .clipped: return "The capture clipped. Lower the interface input gain and record again."
         case .quiet: return "Not enough guitar signal was captured. Check the input and play throughout the recording."
         case .analysisFailed: return "The capture could not be analyzed at 44.1 kHz. Record again."
         case .signalPathRequired: return "Choose the actual guitar signal path before recording."

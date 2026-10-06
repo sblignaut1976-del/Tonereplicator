@@ -310,6 +310,20 @@ app restart and retained-history visibility remain pending.
   compilation are **UNRUN** until a Mac rebuild. Existing 8-test M2 result remains valid
   for the earlier version, not proof of this candidate's new compatibility behavior.
 
+## 6 October 2026 — Separate Stefan/Kevin installations
+
+- User requests two installations with different guitars/interfaces and a Kemper Stage
+  for each person; explicitly confirms **both computers are Macs**.
+- Intended architecture: same app/codebase, independent local settings, routing, Gear
+  Vault and calibration files. No account/shared sync or copied personal data required.
+- Candidate removes personal guitar defaults from fresh forms; optional Fender/Ibanez
+  templates carry confirmation labels. Existing saved identities/captures are unchanged.
+- Added blank-start and separate-local-store tests. Candidate now has **12 XCTest
+  tests**, **UNRUN for this update** until Mac rebuild. The preceding 8-test native
+  pass does not establish these new compatibility/isolation assertions.
+- Kevin's exact Mac/macOS, interface and real signal-path results remain **UNKNOWN**.
+- No universal interface or second-installation hardware compatibility claim added.
+
 ## Live result template
 
 - Date, build version/commit:

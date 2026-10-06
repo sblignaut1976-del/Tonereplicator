@@ -22,6 +22,12 @@ do not create a worktree unless the user asks.
   the actual signal path, firmware/output settings and interface mode; do not treat
   a direct-interface capture as verification of the Kemper path. Keep earlier captures
   and revalidate routing/calibration when the physical path changes.
+- Stefan and Kevin will each install the app on a separate computer, with different
+  guitars and interfaces and a Kemper Stage each. Maintain one shared codebase with
+  independent local data. Do not hard-code one user's gear, channel or interface as
+  another user's defaults. Both computers are Macs; Kevin's exact Mac/macOS/interface
+  is unconfirmed. Validate each named interface/Kemper path separately, never inherit another
+  person's hardware verification from source-code or software-test success.
 
 Run `make test` for the portable core; on macOS run `swift test` and
 `scripts/build-macos.sh`. Keep generated outputs ignored. The macOS binary must be
