@@ -5,7 +5,8 @@ import ToneCore
 
 @MainActor
 final class AudioSession: ObservableObject {
-    enum Screen { case home, target, guitar }
+    enum Screen { case home, target, guitar, match }
+    enum Listening: String, CaseIterable { case reference = "Reference", guitar = "Guitar", both = "Both" }
     enum CaptureStage { case idle, recording, analyzing, ready }
     @Published var screen = Screen.home
     @Published var guitarDraft = GuitarIdentity()
@@ -27,7 +28,26 @@ final class AudioSession: ObservableObject {
     @Published var invalid: UInt64 = 0
     @Published var status = "Choose your interface, then start audio."
     @Published var error: String?
+    @Published private(set) var liveSpectrum: CalibrationFingerprint?
+    @Published private(set) var referenceSpectrum: CalibrationFingerprint?
+    @Published private(set) var referenceEnvelope: [Float] = []
+    @Published private(set) var loadedReferenceID: UUID?
+    @Published private(set) var referenceLoading = false
+    @Published private(set) var referencePlaying = false
+    @Published private(set) var referencePosition = 0.0
+    @Published private(set) var referenceDuration = 0.0
+    @Published private(set) var spectrumDroppedSamples: UInt64 = 0
+    @Published var referenceVolume = 0.25
+    @Published private(set) var listening = Listening.reference
     private var engine: AVAudioEngine?
+    private var liveMixer: AVAudioMixerNode?
+    private var referencePlayer: AVAudioPlayerNode?
+    private var preparedReference: PreparedReference?
+    private var referenceToken = UUID()
+    private var liveSamples: [Float] = []
+    private var spectrumBusy = false
+    private var spectrumToken = UUID()
+    private var spectrumDropBaseline: UInt64 = 0
     private var timer: AnyCancellable?
     private var meter: OpaquePointer?
     private var store: ProjectStore?
@@ -111,6 +131,7 @@ final class AudioSession: ObservableObject {
             error = CalibrationError.signalPathRequired.localizedDescription
             return
         }
+        stopReference()
         drainSamples() // Discard pre-recording backlog on the consumer thread.
         captureSamples = []; captureSamples.reserveCapacity(441_000 * (route.stereo ? 2 : 1))
         captureGuitarID = config.id; captureRoute = route; recordedContext = captureContext
@@ -139,6 +160,7 @@ final class AudioSession: ObservableObject {
     private func drainSamples() {
         guard let queue else { return }
         let count = scratch.withUnsafeMutableBufferPointer { tr_queue_pop(queue, $0.baseAddress, UInt32($0.count)) }
+        updateLiveSpectrum(count: Int(count), dropped: tr_queue_dropped(queue))
         guard captureStage == .recording else { return }
         let total = 441_000 * (captureRoute.stereo ? 2 : 1)
         let remaining = total - captureSamples.count
@@ -206,7 +228,100 @@ final class AudioSession: ObservableObject {
     }
     func setMonitoring(_ enabled: Bool) {
         monitoring = enabled && running
-        engine?.mainMixerNode.outputVolume = monitoring ? 1 : 0
+        if monitoring && listening == .reference { listening = .both }
+        applyListeningGains()
+    }
+    func setListening(_ value: Listening) {
+        listening = value
+        if value != .reference { monitoring = running }
+        applyListeningGains()
+    }
+    func setReferenceVolume(_ value: Double) {
+        referenceVolume = min(1, max(0, value)); applyListeningGains()
+    }
+    private func applyListeningGains() {
+        liveMixer?.outputVolume = monitoring && listening != .reference ? 0.5 : 0
+        referencePlayer?.volume = listening == .guitar ? 0 : Float(referenceVolume)
+    }
+    func prepareReference(_ reference: TargetReference, url: URL) {
+        guard !referenceLoading, !captureBusy, calibrationDraft == nil else { return }
+        stopReference(); preparedReference = nil; loadedReferenceID = nil
+        referenceEnvelope = []; referenceDuration = 0
+        referenceLoading = true; error = nil
+        let token = UUID(); referenceToken = token
+        Task {
+            do {
+                let prepared = try await Task.detached(priority: .userInitiated) {
+                    try PreparedReference.load(reference, url: url)
+                }.value
+                guard referenceToken == token else { return }
+                preparedReference = prepared; loadedReferenceID = prepared.id
+                referenceEnvelope = prepared.timeline.envelope
+                referenceDuration = Double(prepared.timeline.frameCount) / 44_100
+            } catch {
+                guard referenceToken == token else { return }
+                self.error = error.localizedDescription
+            }
+            referenceLoading = false
+        }
+    }
+    func clearReference() {
+        stopReference(); referenceToken = UUID(); referenceLoading = false
+        preparedReference = nil; loadedReferenceID = nil; referenceEnvelope = []; referenceDuration = 0
+    }
+    func playReference() {
+        guard running, !captureBusy, calibrationDraft == nil,
+              let player = referencePlayer, let preparedReference else {
+            error = "Start audio and load the selected reference before playing. Finish any calibration candidate first."
+            return
+        }
+        player.stop()
+        player.scheduleBuffer(preparedReference.buffer, at: nil, options: .loops)
+        applyListeningGains(); player.play()
+        referencePosition = 0; referencePlaying = true
+        referenceSpectrum = preparedReference.timeline.spectrum(at: 0)
+    }
+    func stopReference() {
+        referencePlayer?.stop(); referencePlaying = false
+        referencePosition = 0; referenceSpectrum = nil
+    }
+    private func updateReferencePosition() {
+        guard referencePlaying, let player = referencePlayer, let preparedReference,
+              let renderTime = player.lastRenderTime,
+              let time = player.playerTime(forNodeTime: renderTime) else { return }
+        let count = preparedReference.timeline.frameCount
+        let frame = Int(max(0, time.sampleTime) % Int64(count))
+        referencePosition = Double(frame) / 44_100
+        referenceSpectrum = preparedReference.timeline.spectrum(at: frame)
+    }
+    private func updateLiveSpectrum(count: Int, dropped: UInt64) {
+        guard screen == .match, count > 0 else {
+            liveSamples = []; liveSpectrum = nil
+            spectrumToken = UUID(); spectrumBusy = false
+            return
+        }
+        if dropped != spectrumDropBaseline {
+            spectrumDroppedSamples += dropped - spectrumDropBaseline
+            spectrumDropBaseline = dropped
+            liveSamples = []; liveSpectrum = nil
+            spectrumToken = UUID(); spectrumBusy = false
+        }
+        let channels = route.stereo ? 2 : 1
+        let window = ReferenceTimeline.windowFrames * channels
+        liveSamples.append(contentsOf: scratch.prefix(count))
+        if liveSamples.count > window { liveSamples = Array(liveSamples.suffix(window)) }
+        guard liveSamples.count == window, !spectrumBusy else { return }
+        let samples = liveSamples, token = spectrumToken
+        spectrumBusy = true
+        Task {
+            let measured = await Task.detached(priority: .userInitiated) {
+                try? ReferenceImporter.analyze(samples, channels: channels)
+            }.value
+            guard spectrumToken == token else { return }
+            spectrumBusy = false
+            guard running, screen == .match else { return }
+            liveSpectrum = measured
+        }
     }
     func start() async {
         guard !running, !starting else { return }
@@ -269,7 +384,12 @@ final class AudioSession: ObservableObject {
                   let playbackFormat = AVAudioFormat(standardFormatWithSampleRate: 44_100, channels: 2) else {
                 throw AudioFailure.message("Could not create the canonical audio format.")
             }
-            engine.connect(inputNode, to: engine.mainMixerNode, format: captureFormat)
+            let liveMixer = AVAudioMixerNode(), player = AVAudioPlayerNode()
+            engine.attach(liveMixer); engine.attach(player)
+            self.liveMixer = liveMixer; referencePlayer = player
+            engine.connect(inputNode, to: liveMixer, format: captureFormat)
+            engine.connect(liveMixer, to: engine.mainMixerNode, fromBus: 0, toBus: 0, format: playbackFormat)
+            engine.connect(player, to: engine.mainMixerNode, fromBus: 0, toBus: 1, format: playbackFormat)
             engine.connect(engine.mainMixerNode, to: outputNode, format: playbackFormat)
             // Explicit channel maps: input pair and speaker output pair are independent.
             var map = stereoInput ? [Int32(route.inputChannel), Int32(route.inputChannel + 1)] : [Int32(route.inputChannel)]
@@ -283,7 +403,9 @@ final class AudioSession: ObservableObject {
                 try Devices.checked(AudioUnitSetProperty(outputUnit, kAudioOutputUnitProperty_ChannelMap,
                     kAudioUnitScope_Input, 0, raw.baseAddress!, UInt32(raw.count)), "Select listening output pair")
             }
-            engine.mainMixerNode.outputVolume = 0
+            liveMixer.outputVolume = 0
+            engine.mainMixerNode.outputVolume = 1
+            player.volume = Float(referenceVolume)
             inputNode.installTap(onBus: 0, bufferSize: 256, format: captureFormat) { buffer, _ in
                 guard let data = buffer.floatChannelData else { return }
                 if stereoInput {
@@ -296,7 +418,9 @@ final class AudioSession: ObservableObject {
             }
             tapInstalled = true
             engine.prepare(); try engine.start()
-            running = true; monitoring = false
+            running = true; monitoring = false; listening = .reference
+            liveSamples = []; liveSpectrum = nil; spectrumDropBaseline = 0; spectrumDroppedSamples = 0
+            applyListeningGains()
             let inputLabel = stereoInput ? "Inputs \(route.inputChannel + 1)/\(route.inputChannel + 2)" : "Input \(route.inputChannel + 1)"
             status = "Live • 44.1 kHz • \(input.name) • \(inputLabel) → Outputs \(route.outputChannel + 1)/\(route.outputChannel + 2)"
             timer = Timer.publish(every: 0.1, on: .main, in: .common).autoconnect().sink { [weak self] _ in
@@ -304,6 +428,7 @@ final class AudioSession: ObservableObject {
                 self.peak = tr_meter_peak(meter); self.rms = tr_meter_rms(meter)
                 self.frames = tr_meter_frames(meter); self.invalid = tr_meter_invalid(meter)
                 self.drainSamples()
+                self.updateReferencePosition()
                 if self.engine?.isRunning != true { self.stop(); self.error = "Audio stopped. Check the interface connection and restart audio." }
                 else if (try? Devices.rate(input.id)) != 44_100 {
                     self.stop(); self.error = "Interface disconnected or sample rate changed. Restore 44.1 kHz and restart audio."
@@ -314,10 +439,13 @@ final class AudioSession: ObservableObject {
     func stop() {
         if captureBusy { discardCapture(); calibrationMessage = "Recording canceled because audio stopped. Saved Base Tone preserved." }
         timer?.cancel(); timer = nil
+        stopReference()
+        spectrumToken = UUID(); spectrumBusy = false; liveSamples = []; liveSpectrum = nil
         engine?.mainMixerNode.outputVolume = 0
         engine?.stop()
         if tapInstalled { engine?.inputNode.removeTap(onBus: 0); tapInstalled = false }
         engine = nil
+        liveMixer = nil; referencePlayer = nil
         if let meter { tr_meter_destroy(meter) }; meter = nil
         if let queue { tr_queue_destroy(queue) }; queue = nil
         running = false; monitoring = false; peak = 0; rms = 0

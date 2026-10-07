@@ -33,10 +33,12 @@ struct FoundationView: View {
                 Button { audio.screen = .guitar } label: {
                     Label("MY GUITAR", systemImage: "guitars").foregroundStyle(audio.screen == .guitar ? blue : .secondary)
                 }.buttonStyle(.plain)
-                Text("MATCH").foregroundStyle(.secondary)
+                Button { audio.screen = .match } label: {
+                    Label("MATCH", systemImage: "waveform.path").foregroundStyle(audio.screen == .match ? blue : .secondary)
+                }.buttonStyle(.plain)
                 Text("RIG").foregroundStyle(.secondary)
                 Spacer()
-                Text("Tone Replicator 0.3.0\nTarget import candidate")
+                Text("Tone Replicator 0.4.0\nLive comparison candidate")
                     .font(.caption).foregroundStyle(.secondary)
             }.padding(28).frame(width: 205, alignment: .leading)
                 .background(Color(red: 0.055, green: 0.065, blue: 0.085))
@@ -44,6 +46,8 @@ struct FoundationView: View {
                 GuitarView(audio: audio)
             } else if audio.screen == .target {
                 TargetView(target: target)
+            } else if audio.screen == .match {
+                MatchView(audio: audio, target: target)
             } else {
             ScrollView {
                 VStack(alignment: .leading, spacing: 26) {

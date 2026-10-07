@@ -512,6 +512,22 @@ app restart and retained-history visibility remain pending.
   real recording remain pending; no overall M3 completion claim. M4 may proceed from
   the validated local reference workflow; real comparison/playback remain unimplemented.
 
+## 7 October 2026 — MATCH candidate 0.4.0
+
+- User resumes paused build with "continue" after local reference gate and native
+  20-test pass. Added live/reference spectral display, measured waveform, looping
+  player, independent listening controls and explicitly defined shape-only score.
+- FFT/reference preparation off callback; bounded sample/timeline data; reference
+  hashes checked; stale tasks invalidated on stop/drop. Calibration data unaffected.
+- Portable core: **PASS, 19 checks executed**. Numerical smoke with compiled FFT:
+  −20 dB gain copy scores 99.999998%; different-frequency fixture scores 0.69%.
+  This numerical smoke exercises the formula, not Swift/Apple playback.
+- Four new native checks added; **24 XCTest tests defined, UNRUN for 0.4.0**.
+- Native build, changed mixer/player graph, real green/red curves, selected output
+  channels, A/B and perceived latency all **PENDING**. M4 hardware pass not claimed.
+- Complete perceptual match, calibration recipe, hardware latency compensation,
+  automatic song research and optimization remain unimplemented.
+
 ## Live result template
 
 - Date, build version/commit:

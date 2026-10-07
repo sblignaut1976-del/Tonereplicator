@@ -18,6 +18,10 @@ final class TargetSession: ObservableObject {
     private var store: TargetStore?
     private var loadFailed = false
     var selected: TargetReference? { library.selected }
+    var selectedAnalysisURL: URL? {
+        guard let selected, let store else { return nil }
+        return store.assets.appendingPathComponent(selected.id.uuidString).appendingPathComponent("analysis.wav")
+    }
 
     init() {
         do {

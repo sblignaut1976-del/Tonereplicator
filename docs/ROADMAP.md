@@ -5,7 +5,7 @@
 | M1 | Foundation, canonical rate contracts, CoreAudio discovery, routing/settings | PASS — user-scoped Mac mini / SSL 2+ MKII live gate; numerical latency and universal compatibility unclaimed |
 | M2 | Exact guitar, Gear Vault, persistent selectable factory/calibrated Base Tone | User reports capture/replacement, selectable history and restart persistence PASS; native suite including five-calibration test PASS; verified factory audio dataset unavailable |
 | M3 | Preserved originals, deterministic 44.1 kHz ingest, target evidence/research | Local import/restart gate and 20 native tests PASS; manual UNKNOWN evidence persistence PASS; automatic song research and sourced evidence live check pending |
-| M4 | Real simultaneous red/green spectra, defined similarity, A/B | Not started; live gate required |
+| M4 | Real simultaneous red/green spectra, defined similarity, A/B | Candidate 0.4.0 implemented; 24 native tests and real playback/analyzer/A-B gate pending; latency alignment and complete tone-match metric pending |
 | M5 | Source/version-backed Kemper registry and validated translator | Not started; manuals inventoried, parameter data not yet audited |
 | M6 | Visual chain and exact effect panels | Not started; device workflow gate required |
 | M7 | Real reamp/render optimization and holdout validation | Not started; measured improvement gate required |

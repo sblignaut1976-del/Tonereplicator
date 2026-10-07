@@ -108,13 +108,17 @@ of Diagnostics and observed input/output/persistence results. If build fails, re
 the first compiler error and nearby lines. Do not send credentials. Record evidence
 in [the validation log](docs/VALIDATION.md). Live milestones require real results.
 
-HOME, MY GUITAR and TARGET are active navigation. TARGET imports local mono/stereo
+HOME, MY GUITAR, TARGET and MATCH are active navigation. TARGET imports local mono/stereo
 audio, preserves the source and creates a 44.1 kHz analysis WAV for a chosen 1–30
 second section. Saved targets, song details and individual evidence claims persist
 locally. See [target import and live checks](docs/TARGET_IMPORT.md).
-Simultaneous live/reference spectra, playback, matching percentage, automated online
-research, Kemper controls, optimization and rig exports remain pending. Hardware
-results are scoped to the user reports recorded in the validation log.
+MATCH candidate 0.4.0 adds looped reference playback, a measured waveform, simultaneous
+red/green spectra and a defined spectrum-shape similarity percentage, with independent
+Reference/Guitar/Both listening. Mac build and live checks are required before claiming
+playback or comparison works on hardware. See [MATCH checks](docs/MATCH_ANALYZER.md).
+Automatic online research, calibration-driven tone recipes, complete tone-match
+scoring, latency compensation, Kemper controls, optimization and rig exports remain
+pending. Hardware results are scoped to the user reports in the validation log.
 
 See [stack decision](docs/STACK_DECISION.md), [roadmap](docs/ROADMAP.md) and
 [source inventory](docs/SOURCES.md).
