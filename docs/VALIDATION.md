@@ -528,6 +528,26 @@ app restart and retained-history visibility remain pending.
 - Complete perceptual match, calibration recipe, hardware latency compensation,
   automatic song research and optimization remain unimplemented.
 
+## 8 October 2026 — MATCH native tests and Mac build pass
+
+- User supplied Terminal output from the existing ToneReplicator-M2 checkout on
+  Stefan's Mac mini after update/build instructions. Exact commit and bundle
+  version were not shown in the supplied excerpt.
+- XCTest: **PASS, 24 executed, 0 failures**: 13 Gear, 4 Match, 2 Project and
+  5 Target tests. All four MATCH tests explicitly passed, including reference
+  hash/mono playback preparation, changing-audio/polarity timeline, invalid-score
+  rejection and level-invariant spectrum-shape comparison.
+- Native release build, app packaging and local signing/verification: **PASS**.
+  Script reached `Built build/Tone Replicator.app` and returned to the prompt.
+- Native SwiftPM backend deprecation and AVAudioFile noninterleaved-file messages
+  were nonfatal in this run. The additional Swift Testing runner's zero tests
+  do not replace the 24 executed XCTest cases.
+- Evidence is the user's Mac log, not a cloud execution. Current macOS/Xcode
+  versions and exact source revision were not independently established.
+- Real MATCH reference playback, simultaneous red/green spectra, listening modes,
+  output routing, stop behavior and restart retention remain **PENDING**.
+  No M4 live-audio/hardware pass or dependent milestone advancement is claimed.
+
 ## Live result template
 
 - Date, build version/commit:
