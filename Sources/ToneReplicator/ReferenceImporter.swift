@@ -84,6 +84,9 @@ enum ReferenceImporter {
     }
 
     static func analyze(_ samples: [Float], channels: Int) throws -> CalibrationFingerprint {
+        guard channels == 1 || channels == 2, samples.count % channels == 0,
+              samples.count / channels >= 2048,
+              samples.count / channels <= 1_323_000 else { throw TargetError.invalidAudio }
         var measurements: [TRFingerprint] = []
         for channel in 0..<channels {
             let values = stride(from: channel, to: samples.count, by: channels).map { samples[$0] }

@@ -24,7 +24,6 @@ struct MatchView: View {
             }.padding(38)
         }.background(Color(red: 0.075, green: 0.085, blue: 0.105))
             .onDisappear { audio.stopReference() }
-            .onChange(of: target.library.selectedID) { _, _ in audio.clearReference() }
     }
     private func controls(_ reference: TargetReference) -> some View {
         VStack(alignment: .leading, spacing: 14) {

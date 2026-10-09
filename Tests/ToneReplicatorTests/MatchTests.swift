@@ -70,4 +70,25 @@ final class MatchTests: XCTestCase {
         try corrupted.write(to: analysis)
         XCTAssertThrowsError(try PreparedReference.load(record, url: analysis))
     }
+
+    func testTimelineEndWindowFollowsLoopIntoBeginning() throws {
+        let samples = tone(1000, frames: 8820) + [Float](repeating: 0, count: 8820)
+        let timeline = try ReferenceTimeline.make(samples: samples, channels: 1)
+        let expectedSamples = Array(samples.suffix(4410)) + Array(samples.prefix(3782))
+        let expected = try ReferenceImporter.analyze(expectedSamples, channels: 1)
+        let actual = try XCTUnwrap(timeline.spectrum(at: 13230))
+        XCTAssertEqual(actual.frames, 8192)
+        XCTAssertEqual(actual.rms, expected.rms, accuracy: 1e-10)
+        for index in actual.bandDB.indices {
+            XCTAssertEqual(actual.bandDB[index], expected.bandDB[index], accuracy: 1e-10)
+        }
+    }
+
+    func testReferenceAnalyzerRejectsInvalidChannelLayout() {
+        XCTAssertThrowsError(try ReferenceImporter.analyze(tone(1000), channels: 0))
+        XCTAssertThrowsError(try ReferenceImporter.analyze(tone(1000), channels: 3))
+        XCTAssertThrowsError(try ReferenceImporter.analyze(tone(1000, frames: 8193), channels: 2))
+        XCTAssertThrowsError(try ReferenceImporter.analyze([], channels: 1))
+        XCTAssertThrowsError(try ReferenceImporter.analyze(tone(1000, frames: 2047), channels: 1))
+    }
 }
