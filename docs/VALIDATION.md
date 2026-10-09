@@ -548,6 +548,21 @@ app restart and retained-history visibility remain pending.
   output routing, stop behavior and restart retention remain **PENDING**.
   No M4 live-audio/hardware pass or dependent milestone advancement is claimed.
 
+## 9 October 2026 — General bug review candidate
+
+- Fixed MATCH reference windows near the end of a clip: they now follow looping
+  playback into the beginning instead of repeating an earlier window.
+- Moved selected-target invalidation to the persistent app view. Changing targets
+  on TARGET now clears the previous prepared audio and cancels pending loads even
+  while MATCH is absent; old audio cannot remain attached to the new selection.
+- Reference analysis rejects unsupported channel counts, incomplete stereo frames
+  and out-of-range lengths before indexing channels or calling the core.
+- Added two native regression tests for loop-boundary analysis and invalid layouts.
+- Portable core: **PASS, 19 checks executed** on Linux. Native Swift suite and app
+  build: **UNRUN**, Swift/Apple frameworks unavailable on this host. The suite now
+  defines 26 XCTest tests. Live playback and target-switch checks remain **PENDING**.
+- No hardware milestone advanced. Existing calibration and source assets retained.
+
 ## Live result template
 
 - Date, build version/commit:

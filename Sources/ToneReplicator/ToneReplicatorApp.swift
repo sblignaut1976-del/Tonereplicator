@@ -7,6 +7,7 @@ struct ToneReplicatorApp: App {
     var body: some Scene {
         WindowGroup("Tone Replicator") {
             FoundationView(audio: audio, target: target)
+                .onChange(of: target.library.selectedID) { _, _ in audio.clearReference() }
                 .frame(minWidth: 900, minHeight: 620)
                 .preferredColorScheme(.dark)
                 .onDisappear { audio.stop() }

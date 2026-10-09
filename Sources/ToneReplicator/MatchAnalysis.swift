@@ -44,9 +44,14 @@ struct ReferenceTimeline {
         let frameCount = samples.count / channels
         var spectra: [CalibrationFingerprint?] = []
         for frame in stride(from: 0, to: frameCount, by: stepFrames) {
-            let first = min(frame, max(0, frameCount - windowFrames))
-            let end = min(frameCount, first + windowFrames)
-            let section = Array(samples[(first * channels)..<(end * channels)])
+            // Playback loops: the analysis window must follow the playhead across
+            // the loop boundary rather than repeat an earlier section of audio.
+            let count = min(windowFrames, frameCount)
+            var section: [Float] = []; section.reserveCapacity(count * channels)
+            for offset in 0..<count {
+                let source = ((frame + offset) % frameCount) * channels
+                section.append(contentsOf: samples[source..<(source + channels)])
+            }
             spectra.append(try? ReferenceImporter.analyze(section, channels: channels))
         }
         var envelope: [Float] = []
